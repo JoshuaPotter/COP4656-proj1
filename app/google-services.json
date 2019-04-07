@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "347909345061",
+    "firebase_url": "https://cop4656-proj1.firebaseio.com",
+    "project_id": "cop4656-proj1",
+    "storage_bucket": "cop4656-proj1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347909345061:android:3e1973d366f5944f",
+        "android_client_info": {
+          "package_name": "edu.fsu.cs.mobile.project1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347909345061-sbpc26qvq9vliuep10gnn4td58h2f1au.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.fsu.cs.mobile.project1",
+            "certificate_hash": "d437d29d0d421a6d53eaaa949b86db777b6386c0"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlZvNkxX6thXS7dQRcCAaGS3Jr-bV0Pl4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347909345061-pg9vrjn8du07nau7tucqrui5v8chdcc6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
