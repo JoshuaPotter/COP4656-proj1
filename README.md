@@ -1,6 +1,9 @@
 # Group 2, Project 1
 Recreation of Yik Yak app for COP4656
 
+# User Flow
+[Click here for the intended design of the app](https://app.flowmapp.com/share/d8a6151a00e03209277bc930262ab10a), this will help organize how we build the application
+
 # Setup
 ### Google Sign In
 Add your SHA certificate to Firebase by following the instructions below. This is required for Google Sign-in to work on any APKs (Android app executable file) you build on your machine.
