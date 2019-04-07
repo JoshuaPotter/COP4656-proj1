@@ -3,7 +3,7 @@ Recreation of Yik Yak app for COP4656
 
 # Setup
 ### Google Sign In
-Add your SHA certificate to Firebase to enable Google Sign-in on APKs you build on your machine. This is required for Google Sign-in to work on any APKs (Android app executable file) you build on your machine.
+Add your SHA certificate to Firebase by following the instructions below. This is required for Google Sign-in to work on any APKs (Android app executable file) you build on your machine.
 
 * [Generate a debug SHA certificate](https://developers.google.com/android/guides/client-auth)
 * Copy the SHA-1 key
