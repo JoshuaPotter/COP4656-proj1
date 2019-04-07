@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void googleSignIn() {
+        // Launch the Intent for GoogleSignInClient.getSignInIntent(...);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Firebase sign out
         mAuth.signOut();
 
-        // Google sign out
+        // Google sign out & trigger UI update
         mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
                     @Override
@@ -135,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateUI(FirebaseUser user) {
         if(user != null) {
             // signed in state
+
+            // bundle `user` object in an intent and send to PostsActivity
         } else {
             // signed out state
         }
