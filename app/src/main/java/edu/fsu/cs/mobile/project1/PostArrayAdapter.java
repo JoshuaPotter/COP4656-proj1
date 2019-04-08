@@ -39,7 +39,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        final Post item = getItem(position);
+        final Post item = getItem(position); // Post at this position
 
         // Populate ListView with each post entry
         PostHolder viewHolder;
@@ -86,6 +86,12 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         return convertView;
     }
 
+    /****************************************
+     *                                      *
+     *  Helper Functions for Array Adapter  *
+     *                                      *
+     ****************************************/
+
     @Override
     public int getCount() {
         return postList.size();
@@ -100,10 +106,10 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
     @Override
     public int getPosition(@Nullable Post item) {
         for(int i = 0; i < postList.size(); i++) {
-            if( TextUtils.equals(item.getTitle(), postList.get(i).getTitle()) && TextUtils.equals(item.getMessage(), postList.get(i).getMessage()) ) {
+            if( TextUtils.equals(item.getTitle(), postList.get(i).getTitle())
+                    && TextUtils.equals(item.getMessage(), postList.get(i).getMessage())
+                    && TextUtils.equals(item.getTimestamp(), postList.get(i).getTimestamp()) ) {
                 return i;
-                // if there are two entries with the same title and message, only one will be displayed
-                // consider changing this to check for unique id of post, instead of unique title and message
             }
         }
         return -1;
