@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = "MainActivity";
+    public static final String TAG = "MainActivity";
     private static final int RC_SIGN_IN = 9001;
 
     private FirebaseAuth mAuth;
@@ -137,7 +137,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(user != null) {
             // signed in state
 
-            // bundle `user` object in an intent and send to PostsActivity
+            Intent toPosts = new Intent(this, PostsActivity.class);
+            startActivity(toPosts);
         } else {
             // signed out state
         }
