@@ -50,8 +50,8 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
 
             viewHolder = new PostHolder();
             viewHolder.title = convertView.findViewById(R.id.row_textView_title);
-            viewHolder.title = convertView.findViewById(R.id.row_textView_message);
-            viewHolder.title = convertView.findViewById(R.id.row_textView_timestamp);
+            viewHolder.message = convertView.findViewById(R.id.row_textView_message);
+            viewHolder.timestamp = convertView.findViewById(R.id.row_textView_timestamp);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (PostHolder) convertView.getTag();
@@ -89,6 +89,12 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
     @Override
     public int getCount() {
         return postList.size();
+    }
+
+    @Nullable
+    @Override
+    public Post getItem(int position) {
+        return postList.get(position);
     }
 
     @Override

@@ -27,6 +27,13 @@ public class PostsListFragment extends Fragment {
         // Define PostArrayAdapter and set ListView
         ListView list = view.findViewById(R.id.listView_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
+
+        // dummy data
+        for(int i = 0; i < 10; i++) {
+            Post item = new Post("Test Title", "Test Message", "0.0", "0.0", "Timestamp", "user id");
+            adapter.add(item);
+        }
+
         list.setAdapter(adapter);
     }
 }
