@@ -21,7 +21,7 @@
         android:id="@+id/textView_timestamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         android:text="Timestamp"
         android:textColor="#aaaaaa"
         android:textSize="10sp"
