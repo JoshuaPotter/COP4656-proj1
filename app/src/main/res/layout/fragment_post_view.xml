@@ -11,7 +11,7 @@
         android:id="@+id/textView_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5d"
+        android:layout_marginBottom="5dp"
         android:text="Title"
         android:textColor="#1d1d1d"
         android:textSize="18sp"
@@ -21,7 +21,7 @@
         android:id="@+id/textView_timestamp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="10dp"
         android:text="Timestamp"
         android:textColor="#aaaaaa"
         android:textSize="10sp"
@@ -31,13 +31,13 @@
         android:id="@+id/textView_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="10dp"
         android:text="Message"
         tools:text="Message" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1" />
 </LinearLayout>

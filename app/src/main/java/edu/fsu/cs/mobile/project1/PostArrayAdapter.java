@@ -102,6 +102,8 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         for(int i = 0; i < postList.size(); i++) {
             if( TextUtils.equals(item.getTitle(), postList.get(i).getTitle()) && TextUtils.equals(item.getMessage(), postList.get(i).getMessage()) ) {
                 return i;
+                // if there are two entries with the same title and message, only one will be displayed
+                // consider changing this to check for unique id of post, instead of unique title and message
             }
         }
         return -1;
