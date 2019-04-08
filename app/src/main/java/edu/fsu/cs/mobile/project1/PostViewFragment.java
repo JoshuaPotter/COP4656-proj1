@@ -17,4 +17,6 @@ public class PostViewFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_post_view, container, false);
     }
 
+    // TODO: setText() on all TextView objects
+
 }

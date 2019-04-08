@@ -29,8 +29,8 @@ public class PostsListFragment extends Fragment {
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
         // dummy data
-        for(int i = 0; i < 10; i++) {
-            Post item = new Post("#" + i+1 + ". Test Title", "Test Message", "0.0", "0.0", "Timestamp", "user id");
+        for(int i = 1; i < 11; i++) {
+            Post item = new Post("#" + i + ". Test Title", "Test Message", "0.0", "0.0", "Timestamp", "user id");
             adapter.add(item);
         }
 
