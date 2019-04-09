@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.core.FirestoreClient;
 
@@ -48,9 +49,14 @@ public class PostCreateFragment extends Fragment {
                 title = et_title.getText().toString();
                 message = et_message.getText().toString();
 
-                // to be sent to firestore database
-                Post test_item = new Post(title, message, "0.0", "0.0", "Timestamp", "user id");
-
+                if (title.matches("") || message.matches("")) {
+                    Toast.makeText(getActivity(), "Missing title or message, could not create post.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else {
+                    // to be sent to firestore database
+                    Post test_item = new Post(title, message, "0.0", "0.0", "Timestamp", "user id");
+                }
             }
         });
 
