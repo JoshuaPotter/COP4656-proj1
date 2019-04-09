@@ -51,10 +51,6 @@ public class PostsListFragment extends Fragment {
         list.setAdapter(adapter);
     }
 
-    public PostArrayAdapter getAdapter() {
-        return adapter;
-    }
-
     public void getPosts() {
         // Remove posts from adapter if any exist
         adapter.clear();

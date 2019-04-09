@@ -14,4 +14,12 @@ You only need to do this once when you setup the project on your machine.
 * Copy the SHA-1 key
 * In the Firebase Console, select our project
 * Go to Project Settings > General, then at the bottom under "Project 1" click "Add fingerprint"
+
 ![Add fingerprint](https://i.imgur.com/fEbTWWT.png)
+
+### Google Maps
+Required for Google Maps API key usage for your APK builds.
+
+* Using the same SHA-1 key, [add it as an item](https://console.cloud.google.com/apis/credentials/key/6f88ff34-ae9b-4266-ab1a-29cf66871642?project=cop4656-proj1&authuser=2&consoleReturnUrl=https:%2F%2Fcloud.google.com%2Fmaps-platform%2F%3Fapis%3Dmaps%26project%3Dcop4656-proj1&consoleUI=CLOUD)
+
+![Add item](https://i.imgur.com/XSOjsH6.png)
