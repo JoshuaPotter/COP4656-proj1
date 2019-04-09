@@ -60,25 +60,9 @@ public class PostsActivity extends AppCompatActivity {
         boolean state = false;
         if(i == R.id.menuItem_sign_out) {
             // Sign Out menu
-            signOut();
+            AuthHelper.signOut(this, mGoogleSignInClient);
             state = true;
         }
         return state;
-    }
-
-    private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google sign out & trigger intent
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Upon sign out, send to MainActivity
-                        Intent toSignIn = new Intent(PostsActivity.this, MainActivity.class);
-                        startActivity(toSignIn);
-                    }
-                });
     }
 }
