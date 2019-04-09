@@ -40,14 +40,14 @@ public class PostCreateFragment extends Fragment {
 
     private FirebaseFirestore db;
 
-    private Button submit_button;
-    private Button cancel_button;
-
-    private EditText et_title;
-    private EditText et_message;
-
     private String title;
     private String message;
+
+    // UI Objects
+    private Button submit_button;
+    private Button cancel_button;
+    private EditText et_title;
+    private EditText et_message;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
