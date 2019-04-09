@@ -64,7 +64,7 @@ public class PostsListFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                // Log.d(TAG, document.getId() + " => " + document.getData());
 
                                 // Add post to adapter
                                 Map<String, Object> data = new HashMap<>(document.getData());

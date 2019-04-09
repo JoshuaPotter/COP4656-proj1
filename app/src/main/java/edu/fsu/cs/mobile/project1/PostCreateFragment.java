@@ -1,15 +1,18 @@
 package edu.fsu.cs.mobile.project1;
 
-
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,25 +23,25 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.ServerTimestamp;
-import com.google.firebase.firestore.core.FirestoreClient;
-import com.google.firestore.v1.DocumentTransform;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class PostCreateFragment extends Fragment {
+public class PostCreateFragment extends Fragment implements LocationListener {
     public static final String TAG = PostCreateFragment.class.getCanonicalName();
 
     private FirebaseFirestore db;
+
+    // Location
+    private LocationManager manager;
+    private double latitude;
+    private double longitude;
 
     // UI Objects
     private Button submit_button;
@@ -59,6 +62,18 @@ public class PostCreateFragment extends Fragment {
 
         // Connect to Firestore DB
         db = FirebaseFirestore.getInstance();
+
+        // Request location permissions for latitude and longitude
+        manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted, request permission
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+            }
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+        } catch(SecurityException e) {
+            Log.e(TAG, "Error creating location service", e);
+        }
 
         // Get UI Objects
         et_title = view.findViewById(R.id.editText_title);
@@ -94,15 +109,11 @@ public class PostCreateFragment extends Fragment {
     }
 
     public void createPost(String title, String message) {
-        // Get Location
-        double latitude = 0.0,
-                longitude = 0.0;
+        // Get current location coordinates
         try {
-            // TODO: Fix latitude and longitude get function
-            LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
             Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
+            this.latitude = location.getLatitude();
+            this.longitude = location.getLongitude();
         } catch(SecurityException e) {
             Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
                     .show();
@@ -151,5 +162,27 @@ public class PostCreateFragment extends Fragment {
                         Toast.makeText(getContext(), "Error adding post", Toast.LENGTH_SHORT);
                     }
                 });
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        // If location changes, update coordinates
+        Log.i("Message: ","Location changed, " + location.getAccuracy() + " , " + location.getLatitude()+ "," + location.getLongitude());
+
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // Required function by LocationListener
+    }
+    @Override
+    public void onProviderEnabled(String provider) {
+        // Required function by LocationListener
+    }
+    @Override
+    public void onProviderDisabled(String provider) {
+        // Required function by LocationListener
     }
 }
