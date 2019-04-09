@@ -6,8 +6,8 @@ import android.os.Parcelable;
 public class Post implements Parcelable {
     private String title;
     private String message;
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     private String timestamp;
     private String userid;
 
@@ -15,21 +15,21 @@ public class Post implements Parcelable {
 
     }
 
-    public Post(String title, String message, String latitude, String longitude,
+    public Post(String title, String message, double latitude, double longitude,
                 String timestamp, String userid) {
         this.title = title;
         this.message = message;
+        this.userid = userid;
         this.latitude = latitude;
         this.longitude = longitude;
         this.timestamp = timestamp;
-        this.userid = userid;
     }
 
     protected Post(Parcel in) {
         this.title = in.readString();
         this.message = in.readString();
-        this.latitude = in.readString();
-        this.longitude = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
         this.timestamp = in.readString();
         this.userid = in.readString();
     }
@@ -38,8 +38,8 @@ public class Post implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(message);
-        dest.writeString(latitude);
-        dest.writeString(longitude);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
         dest.writeString(timestamp);
         dest.writeString(userid);
     }
@@ -77,19 +77,19 @@ public class Post implements Parcelable {
         this.message = message;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 

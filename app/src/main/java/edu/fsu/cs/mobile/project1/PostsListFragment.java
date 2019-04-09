@@ -30,7 +30,7 @@ public class PostsListFragment extends Fragment {
 
         // dummy data
         for(int i = 1; i < 11; i++) {
-            Post item = new Post("#" + i + ". Test Title", "Test Message", "0.0", "0.0", "Timestamp", "user id");
+            Post item = new Post("#" + i + ". Test Title", "Test Message", 0.0, 0.0, "Timestamp", "user id");
             adapter.add(item);
         }
 
