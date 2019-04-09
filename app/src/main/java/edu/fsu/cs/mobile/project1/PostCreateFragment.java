@@ -99,6 +99,7 @@ public class PostCreateFragment extends Fragment {
         double latitude = 0.0,
                 longitude = 0.0;
         try {
+            // TODO: Fix latitude and longitude get function
             LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
             Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             latitude = location.getLatitude();
@@ -135,10 +136,10 @@ public class PostCreateFragment extends Fragment {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
 
-                        // Get PostsListFragment from fragment manager, get the adapter, and notify data update
+                        // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
-                        fragment.getPosts();
+                        fragment.getPosts(); // gets latest posts
 
                         // Go back to list
                         getActivity().getSupportFragmentManager().popBackStack();
@@ -152,5 +153,4 @@ public class PostCreateFragment extends Fragment {
                     }
                 });
     }
-
 }
