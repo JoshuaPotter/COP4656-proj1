@@ -21,8 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class PostsActivity extends AppCompatActivity {
     public static final String TAG = "PostActivity";
 
-    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseUser user; // https://firebase.google.com/docs/auth/android/manage-users
 
     @Override
@@ -31,11 +31,7 @@ public class PostsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_posts);
 
         // Get GoogleSignInClient instance
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = AuthHelper.getClient(PostsActivity.this);
 
         // Get Firebase instance and current user
         mAuth = FirebaseAuth.getInstance();

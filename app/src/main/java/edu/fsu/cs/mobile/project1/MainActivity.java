@@ -36,11 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = AuthHelper.getClient(MainActivity.this);
         findViewById(R.id.google_sign_in_button).setOnClickListener(this); // google sign in listener
 
         // Get firebase authentication instance
@@ -59,17 +55,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         int i = v.getId();
         if(i == R.id.google_sign_in_button) {
-            googleSignIn();
+            signIn();
         }
     }
 
-    private void googleSignIn() {
+    private void signIn() {
         // Launch the Intent for GoogleSignInClient.getSignInIntent(...);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    private void googleSignOut() {
+    private void signOut() {
         // Firebase sign out
         mAuth.signOut();
 
