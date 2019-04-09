@@ -81,8 +81,9 @@ public class PostsActivity extends AppCompatActivity {
 
         // Hide current fragment and show PostCreateFragment
         transaction.addToBackStack(currentFragment.getTag());
-        transaction.hide(manager.findFragmentByTag(currentFragment.getTag()));
-        transaction.add(R.id.frameLayout_posts, fragment, PostCreateFragment.TAG);
+        //transaction.hide(manager.findFragmentByTag(currentFragment.getTag()));
+        //transaction.add(R.id.frameLayout_posts, fragment, PostCreateFragment.TAG);
+        transaction.replace(R.id.frameLayout_posts, fragment);
         transaction.commit();
 
         return true;
@@ -92,7 +93,7 @@ public class PostsActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-        
+
         YourPostsFragment fragment = new YourPostsFragment();
 
         Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
