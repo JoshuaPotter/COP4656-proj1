@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menuItem_sign_out"
-        android:title="Sign Out" />
-    <item
         android:id="@+id/menuItem_create_post"
-        android:title="Create Post" />
+        android:title="@string/create_post" />
+    <item
+        android:id="@+id/menuItem_sign_out"
+        android:title="@string/sign_out" />
 </menu>

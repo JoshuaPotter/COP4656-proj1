@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 public class PostCreateFragment extends Fragment {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
 
+    // TODO: Get values from editText inputs, send values to FireStore database using FireBase
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
