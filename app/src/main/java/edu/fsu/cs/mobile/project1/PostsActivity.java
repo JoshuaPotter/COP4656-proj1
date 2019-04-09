@@ -60,6 +60,10 @@ public class PostsActivity extends AppCompatActivity {
         } else if (i == R.id.menuItem_create_post) {
             // Create New Post menu item
             state = toCreatePost();
+        } else if (i == R.id.menuItem_view_your_posts){
+            // View Your Posts menu item
+            state = toViewYourPosts();
+
         }
         return state;
     }
@@ -79,6 +83,24 @@ public class PostsActivity extends AppCompatActivity {
         transaction.addToBackStack(currentFragment.getTag());
         transaction.hide(manager.findFragmentByTag(currentFragment.getTag()));
         transaction.add(R.id.frameLayout_posts, fragment, PostCreateFragment.TAG);
+        transaction.commit();
+
+        return true;
+    }
+
+    private boolean toViewYourPosts(){
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        
+        YourPostsFragment fragment = new YourPostsFragment();
+
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+
+        transaction.addToBackStack(currentFragment.getTag());
+        //.hide(manager.findFragmentByTag(currentFragment.getTag()));
+        //transaction.add(R.id.frameLayout_posts, fragment, YourPostsFragment.TAG);
+        transaction.replace(R.id.frameLayout_posts, fragment);
         transaction.commit();
 
         return true;
