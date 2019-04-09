@@ -56,6 +56,9 @@ public class PostsListFragment extends Fragment {
     }
 
     public void getPosts() {
+        // Remove posts from adapter if any exist
+        adapter.clear();
+
         // Get posts from database
         db.collection("posts")
                 .get()
