@@ -54,8 +54,12 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
             viewHolder = (PostHolder) convertView.getTag();
         }
 
+        // Remove newlines and only show first 140 characters
+        String sanitizedMessage = item.getMessage().replace("\n", " ")
+                .substring(0, Math.min(item.getMessage().length(), 139));
+
         viewHolder.title.setText(item.getTitle());
-        viewHolder.message.setText(item.getMessage());
+        viewHolder.message.setText(sanitizedMessage); // get first 144 characters
         viewHolder.timestamp.setText(item.getTimestamp().toString());
 
         // OnClickListener for each post in adapter
