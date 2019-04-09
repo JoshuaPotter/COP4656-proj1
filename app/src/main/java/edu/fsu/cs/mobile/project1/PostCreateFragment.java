@@ -5,8 +5,12 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +18,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ServerTimestamp;
 import com.google.firebase.firestore.core.FirestoreClient;
+import com.google.firestore.v1.DocumentTransform;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class PostCreateFragment extends Fragment {
-    public static final String TAG = PostsListFragment.class.getCanonicalName();
+    public static final String TAG = PostCreateFragment.class.getCanonicalName();
 
-    // TODO: Send values to FireStore database using FireBase
+    private FirebaseFirestore db;
 
     private Button submit_button;
     private Button cancel_button;
@@ -46,6 +60,9 @@ public class PostCreateFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Connect to Firestore DB
+        db = FirebaseFirestore.getInstance();
+
         // Get UI Objects
         et_title = view.findViewById(R.id.editText_title);
         et_message = view.findViewById(R.id.editText_message);
@@ -63,27 +80,7 @@ public class PostCreateFragment extends Fragment {
                             .show();
                 }
                 else {
-                    // Get User ID
-                    String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                    // Get Location
-                    double latitude = 0.0,
-                            longitude = 0.0;
-                    try {
-                        LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-                        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                    } catch(SecurityException e) {
-                        Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
-                                .show();
-                    }
-
-                    // Get Timestamp
-                    String timestamp = new Timestamp(new Date()).toString();
-
-                    // to be sent to firestore database
-                    Post test_item = new Post(title, message, latitude, longitude, timestamp, userid);
+                    createPost(title, message);
                 }
             }
         });
@@ -95,7 +92,65 @@ public class PostCreateFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+    }
 
+    public void createPost(String title, String message) {
+        // Get Location
+        double latitude = 0.0,
+                longitude = 0.0;
+        try {
+            LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+            Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        } catch(SecurityException e) {
+            Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+        // Get User ID
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // To be sent to firestore database, null timestamp will autopopulate by Firestore
+        Post item = new Post(title, message, latitude, longitude, null, userId);
+
+        // Add to Firestore DB
+        addToDB(item);
+    }
+
+    public void addToDB(Post item) {
+        // Setup Map object for Firestore
+        Map<String, Object> data = new HashMap<>();
+        data.put("Location", new GeoPoint(item.getLatitude(), item.getLongitude()));
+        data.put("Timestamp", FieldValue.serverTimestamp());
+        data.put("Title", item.getTitle());
+        data.put("Message", item.getMessage());
+        data.put("User ID", item.getUserid());
+
+        // Add to Firestore collection called "posts"
+        db.collection("posts")
+                .add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+
+                        // Get PostsListFragment from fragment manager, get the adapter, and notify data update
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
+                        fragment.getPosts();
+
+                        // Go back to list
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                        Toast.makeText(getContext(), "Error adding post", Toast.LENGTH_SHORT);
+                    }
+                });
     }
 
 }

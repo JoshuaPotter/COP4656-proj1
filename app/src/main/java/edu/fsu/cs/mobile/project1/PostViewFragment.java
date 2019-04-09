@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class PostViewFragment extends Fragment {
-    public static final String TAG = PostsListFragment.class.getCanonicalName();
+    public static final String TAG = PostViewFragment.class.getCanonicalName();
 
     private Post item;
 
@@ -41,7 +41,7 @@ public class PostViewFragment extends Fragment {
 
         // Set text for TextView objects for this post
         mTitle.setText(item.getTitle());
-        mTimestamp.setText(item.getTimestamp());
+        mTimestamp.setText(item.getTimestamp().toString());
         mMessage.setText(item.getMessage());
     }
 }

@@ -3,20 +3,26 @@ package edu.fsu.cs.mobile.project1;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
+
 public class Post implements Parcelable {
     private String title;
     private String message;
     private double latitude;
     private double longitude;
-    private String timestamp;
     private String userid;
+
+    @ServerTimestamp
+    private Date timestamp;
 
     public Post() {
 
     }
 
     public Post(String title, String message, double latitude, double longitude,
-                String timestamp, String userid) {
+                Date timestamp, String userid) {
         this.title = title;
         this.message = message;
         this.userid = userid;
@@ -30,7 +36,7 @@ public class Post implements Parcelable {
         this.message = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
-        this.timestamp = in.readString();
+        this.timestamp = (Date) in.readSerializable();
         this.userid = in.readString();
     }
 
@@ -40,7 +46,7 @@ public class Post implements Parcelable {
         dest.writeString(message);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeString(timestamp);
+        dest.writeSerializable(timestamp);
         dest.writeString(userid);
     }
 
@@ -93,11 +99,11 @@ public class Post implements Parcelable {
         this.longitude = longitude;
     }
 
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 

@@ -1,18 +1,32 @@
 package edu.fsu.cs.mobile.project1;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class PostsListFragment extends Fragment {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
 
     private PostArrayAdapter adapter;
+    private FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -24,16 +38,51 @@ public class PostsListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Connect to Firestore DB
+        db = FirebaseFirestore.getInstance();
+
         // Define PostArrayAdapter and set ListView
         ListView list = view.findViewById(R.id.listView_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
-        // dummy data
-        for(int i = 1; i < 11; i++) {
-            Post item = new Post("#" + i + ". Test Title", "Test Message", 0.0, 0.0, "Timestamp", "user id");
-            adapter.add(item);
-        }
+        // Get latest posts from Firestore
+        getPosts();
 
         list.setAdapter(adapter);
+    }
+
+    public PostArrayAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void getPosts() {
+        // Get posts from database
+        db.collection("posts")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+
+                                // Add post to adapter
+                                Map<String, Object> data = new HashMap<>(document.getData());
+                                double latitude = ((GeoPoint) data.get("Location")).getLatitude();
+                                double longitude = ((GeoPoint) data.get("Location")).getLongitude();
+                                String message = (String) data.get("Message");
+                                Timestamp timestamp = (Timestamp) data.get("Timestamp");
+                                String title = (String) data.get("Title");
+                                String userId = (String) data.get("User ID");
+
+                                Post item = new Post(title, message, latitude, longitude, timestamp.toDate(), userId);
+                                adapter.add(item);
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+        adapter.notifyDataSetChanged();
     }
 }

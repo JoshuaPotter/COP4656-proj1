@@ -59,7 +59,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
 
         viewHolder.title.setText(item.getTitle());
         viewHolder.message.setText(item.getMessage());
-        viewHolder.timestamp.setText(item.getTimestamp());
+        viewHolder.timestamp.setText(item.getTimestamp().toString());
 
         // OnClickListener for each post in adapter
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +108,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         for(int i = 0; i < postList.size(); i++) {
             if( TextUtils.equals(item.getTitle(), postList.get(i).getTitle())
                     && TextUtils.equals(item.getMessage(), postList.get(i).getMessage())
-                    && TextUtils.equals(item.getTimestamp(), postList.get(i).getTimestamp()) ) {
+                    && TextUtils.equals(item.getTimestamp().toString(), postList.get(i).getTimestamp().toString()) ) {
                 return i;
             }
         }
