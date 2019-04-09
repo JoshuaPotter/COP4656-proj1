@@ -40,9 +40,6 @@ public class PostCreateFragment extends Fragment {
 
     private FirebaseFirestore db;
 
-    private String title;
-    private String message;
-
     // UI Objects
     private Button submit_button;
     private Button cancel_button;
@@ -73,8 +70,8 @@ public class PostCreateFragment extends Fragment {
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title = et_title.getText().toString();
-                message = et_message.getText().toString();
+                String title = et_title.getText().toString();
+                String message = et_message.getText().toString();
 
                 if (title.matches("") || message.matches("")) {
                     Toast.makeText(getActivity(), "Missing title or message, could not create post.", Toast.LENGTH_SHORT)
