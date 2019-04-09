@@ -2,6 +2,8 @@ package edu.fsu.cs.mobile.project1;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -59,10 +61,33 @@ public class PostsActivity extends AppCompatActivity {
         int i = item.getItemId();
         boolean state = false;
         if(i == R.id.menuItem_sign_out) {
-            // Sign Out menu
+            // Sign Out menu item
             AuthHelper.signOut(this, mGoogleSignInClient);
             state = true;
+        } else if (i == R.id.menuItem_create_post) {
+            // Create New Post menu item
+            state = toCreatePost();
         }
         return state;
+    }
+
+    private boolean toCreatePost() {
+        // Display PostViewFragment
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        // Create new fragment
+        PostCreateFragment fragment = new PostCreateFragment();
+
+        // Get current fragment
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+
+        // Hide current fragment and show PostCreateFragment
+        transaction.addToBackStack(currentFragment.getTag());
+        transaction.hide(manager.findFragmentByTag(currentFragment.getTag()));
+        transaction.add(R.id.frameLayout_posts, fragment, PostCreateFragment.TAG);
+        transaction.commit();
+
+        return true;
     }
 }

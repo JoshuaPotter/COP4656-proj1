@@ -111,13 +111,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateUI(FirebaseUser user) {
         if(user != null) {
-            // signed in state
-            // Automatically sends user to PostsActivity if already logged in from previous session
+            // Signed in state
 
+            // Send to PostsActivity and finish this activity so user cannot come back unless they sign out
+            // Automatically sends user to PostsActivity if already logged in from previous session
             Intent toPosts = new Intent(this, PostsActivity.class);
             startActivity(toPosts);
+            finish();
         } else {
-            // signed out state
+            // Signed out state
         }
     }
 }

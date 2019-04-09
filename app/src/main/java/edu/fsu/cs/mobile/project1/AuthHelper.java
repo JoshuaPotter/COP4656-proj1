@@ -41,9 +41,11 @@ public final class AuthHelper {
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        // Upon sign out, send to MainActivity
+                        // Upon sign out, send to MainActivity and finish current activity so user
+                        //  cannot go back
                         Intent toSignIn = new Intent(mActivity, MainActivity.class);
                         mActivity.startActivity(toSignIn);
+                        mActivity.finish();
                     }
                 });
     }
