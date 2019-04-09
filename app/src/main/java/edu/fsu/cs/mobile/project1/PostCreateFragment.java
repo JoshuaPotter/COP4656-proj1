@@ -69,6 +69,7 @@ public class PostCreateFragment extends Fragment {
         submit_button = view.findViewById(R.id.button_submit);
         cancel_button = view.findViewById(R.id.button_cancel);
 
+        // On Click Listener for submit
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,11 +86,12 @@ public class PostCreateFragment extends Fragment {
             }
         });
 
+        // On Click Listener for cancel
         cancel_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // May have to be done a different way
-                getActivity().onBackPressed();
+                // Go back to list
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
