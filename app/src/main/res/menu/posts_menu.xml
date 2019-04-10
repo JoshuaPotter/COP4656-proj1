@@ -4,7 +4,13 @@
     <item
         android:id="@+id/menuItem_create_post"
         android:title="@string/create_post" />
+
+    <item
+        android:id="@+id/menuItem_view_your_posts"
+        android:title="@string/view_your_posts"/>
+
     <item
         android:id="@+id/menuItem_sign_out"
         android:title="@string/sign_out" />
+
 </menu>

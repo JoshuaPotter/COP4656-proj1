@@ -1,9 +1,11 @@
 package edu.fsu.cs.mobile.project1;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +40,6 @@ public class PostsListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         // Connect to Firestore DB
         db = FirebaseFirestore.getInstance();
 
@@ -49,7 +50,27 @@ public class PostsListFragment extends Fragment {
         // Get latest posts from Firestore
         getPosts();
 
+        // Assign adapter to the ListView
         list.setAdapter(adapter);
+
+        // Add Pull to Refresh interaction with ListView
+        //  Source: https://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide#swiperefreshlayout-with-listview
+        final SwipeRefreshLayout swipeContainer = view.findViewById(R.id.swipe);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Get latest posts
+                getPosts();
+
+                // Show loader for 2 seconds
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeContainer.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
     }
 
     public void getPosts() {
@@ -84,6 +105,8 @@ public class PostsListFragment extends Fragment {
                         }
                     }
                 });
+
+        // Update adapter
         adapter.notifyDataSetChanged();
     }
 }
