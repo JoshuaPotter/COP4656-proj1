@@ -78,8 +78,6 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
 
                 // Hide PostsListFragment and show PostViewFragment
                 transaction.addToBackStack(PostsListFragment.TAG);
-                //transaction.hide(manager.findFragmentByTag(PostsListFragment.TAG));
-                //transaction.add(R.id.frameLayout_posts, fragment, PostViewFragment.TAG);
                 transaction.replace(R.id.frameLayout_posts, fragment);
                 transaction.commit();
             }
