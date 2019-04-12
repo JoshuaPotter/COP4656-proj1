@@ -126,42 +126,7 @@ public class PostCreateFragment extends Fragment implements LocationListener {
         Post item = new Post(title, message, latitude, longitude, null, userId);
 
         // Add to Firestore DB
-        addToDB(item);
-    }
-
-    public void addToDB(Post item) {
-        // Setup Map object for Firestore
-        Map<String, Object> data = new HashMap<>();
-        data.put("Location", new GeoPoint(item.getLatitude(), item.getLongitude()));
-        data.put("Timestamp", FieldValue.serverTimestamp());
-        data.put("Title", item.getTitle());
-        data.put("Message", item.getMessage());
-        data.put("User ID", item.getUserid());
-
-        // Add to Firestore collection called "posts"
-        db.collection("posts")
-                .add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-
-                        // Get PostsListFragment from fragment manager and update it's posts
-                        FragmentManager manager = getActivity().getSupportFragmentManager();
-                        PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
-                        fragment.getPosts(); // gets latest posts
-
-                        // Go back to list
-                        getActivity().getSupportFragmentManager().popBackStack();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                        Toast.makeText(getContext(), "Error adding post", Toast.LENGTH_SHORT);
-                    }
-                });
+        FirestoreHelper.addToDB(getActivity(), db, item);
     }
 
     @Override

@@ -3,9 +3,12 @@ package edu.fsu.cs.mobile.project1;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Post implements Parcelable {
     private String title;
@@ -21,6 +24,15 @@ public class Post implements Parcelable {
 
     }
 
+    public Post(Map<String, Object> data) {
+        this.title = (String) data.get(FirestoreHelper.TITLE);
+        this.message = (String) data.get(FirestoreHelper.MESSAGE);
+        this.userid = (String) data.get(FirestoreHelper.USERID);
+        this.latitude = ((GeoPoint) data.get(FirestoreHelper.LOCATION)).getLatitude();
+        this.longitude = ((GeoPoint) data.get(FirestoreHelper.LOCATION)).getLongitude();
+        this.timestamp = ((Timestamp) data.get(FirestoreHelper.TIMESTAMP)).toDate();
+    }
+
     public Post(String title, String message, double latitude, double longitude,
                 Date timestamp, String userid) {
         this.title = title;
@@ -34,20 +46,20 @@ public class Post implements Parcelable {
     protected Post(Parcel in) {
         this.title = in.readString();
         this.message = in.readString();
+        this.userid = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.timestamp = (Date) in.readSerializable();
-        this.userid = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(message);
+        dest.writeString(userid);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeSerializable(timestamp);
-        dest.writeString(userid);
     }
 
     @Override

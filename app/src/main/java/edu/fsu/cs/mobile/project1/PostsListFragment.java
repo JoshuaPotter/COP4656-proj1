@@ -48,7 +48,7 @@ public class PostsListFragment extends Fragment {
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
         // Get latest posts from Firestore
-        getPosts();
+        FirestoreHelper.getPosts(adapter, db);
 
         // Assign adapter to the ListView
         list.setAdapter(adapter);
@@ -60,7 +60,7 @@ public class PostsListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // Get latest posts
-                getPosts();
+                FirestoreHelper.getPosts(adapter, db);
 
                 // Show loader for 2 seconds
                 new Handler().postDelayed(new Runnable() {
@@ -73,40 +73,7 @@ public class PostsListFragment extends Fragment {
         });
     }
 
-    public void getPosts() {
-        // Remove posts from adapter if any exist
-        adapter.clear();
-
-        // Get posts from database
-        db.collection("posts")
-                .orderBy("Timestamp", Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Log.d(TAG, document.getId() + " => " + document.getData());
-
-                                // Add post to adapter
-                                Map<String, Object> data = new HashMap<>(document.getData());
-                                double latitude = ((GeoPoint) data.get("Location")).getLatitude();
-                                double longitude = ((GeoPoint) data.get("Location")).getLongitude();
-                                String message = (String) data.get("Message");
-                                Timestamp timestamp = (Timestamp) data.get("Timestamp");
-                                String title = (String) data.get("Title");
-                                String userId = (String) data.get("User ID");
-
-                                Post item = new Post(title, message, latitude, longitude, timestamp.toDate(), userId);
-                                adapter.add(item);
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-
-        // Update adapter
-        adapter.notifyDataSetChanged();
+    public PostArrayAdapter getAdapter() {
+        return adapter;
     }
 }

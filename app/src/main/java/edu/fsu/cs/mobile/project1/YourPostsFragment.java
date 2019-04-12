@@ -44,37 +44,8 @@ public class YourPostsFragment extends Fragment {
         ListView list = view.findViewById(R.id.listViewL_your_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
-        getPosts();
+        FirestoreHelper.getMyPosts(adapter, db);
 
         list.setAdapter(adapter);
-    }
-
-    public void getPosts(){
-        adapter.clear();
-
-        db.collection("posts").whereEqualTo("User ID", FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>(){
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task){
-                        if(task.isSuccessful()){
-                            for(QueryDocumentSnapshot document : task.getResult()){
-                                Map<String, Object> data = new HashMap<>(document.getData());
-                                double latitude = ((GeoPoint) data.get("Location")).getLatitude();
-                                double longitude = ((GeoPoint) data.get("Location")).getLongitude();
-                                String message = (String) data.get("Message");
-                                Timestamp timestamp = (Timestamp) data.get("Timestamp");
-                                String title = (String) data.get("Title");
-                                String userId = (String) data.get("User ID");
-
-                                Post item = new Post(title, message, latitude, longitude, timestamp.toDate(), userId);
-                                adapter.add(item);
-                            }
-                        }
-                        else{
-                            Log.w(TAG, "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-        adapter.notifyDataSetChanged();
     }
 }

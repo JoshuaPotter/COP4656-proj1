@@ -69,7 +69,7 @@ public class PostsActivity extends AppCompatActivity {
     }
 
     private boolean toCreatePost() {
-        // Display PostViewFragment
+        // Display PostCreateFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -81,8 +81,6 @@ public class PostsActivity extends AppCompatActivity {
 
         // Hide current fragment and show PostCreateFragment
         transaction.addToBackStack(currentFragment.getTag());
-        //transaction.hide(manager.findFragmentByTag(currentFragment.getTag()));
-        //transaction.add(R.id.frameLayout_posts, fragment, PostCreateFragment.TAG);
         transaction.replace(R.id.frameLayout_posts, fragment);
         transaction.commit();
 
@@ -90,17 +88,18 @@ public class PostsActivity extends AppCompatActivity {
     }
 
     private boolean toViewYourPosts(){
+        // Display PostViewFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
-
+        // Create new fragment
         YourPostsFragment fragment = new YourPostsFragment();
 
+        // Get current fragment
         Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
 
+        // Hide current fragment and show PostCreateFragment
         transaction.addToBackStack(currentFragment.getTag());
-        //.hide(manager.findFragmentByTag(currentFragment.getTag()));
-        //transaction.add(R.id.frameLayout_posts, fragment, YourPostsFragment.TAG);
         transaction.replace(R.id.frameLayout_posts, fragment);
         transaction.commit();
 
