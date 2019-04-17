@@ -34,8 +34,8 @@ public class FirestoreHelper {
     // Collection Title
     public static final String POSTS_COLLECTION = "posts";
 
-    // 32 km (~20 miles) radius
-    public static final double RADIUS = 32;
+    // 16 km (~10 miles) radius
+    public static final double RADIUS = 16;
 
     // Field Titles
     public static final String TITLE = "Title";
@@ -57,6 +57,7 @@ public class FirestoreHelper {
         geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
             @Override
             public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                // For each document in our query within the geolocation, add it to the adapter as a post object
                 Map<String, Object> data = documentSnapshot.getData();
                 adapter.add(new Post(data));
                 Log.w("DocumentSnapshot", data.toString());
@@ -64,12 +65,12 @@ public class FirestoreHelper {
 
             @Override
             public void onDocumentExited(DocumentSnapshot documentSnapshot) {
-                // Required for GeoFirestore
+                // For each document in query that has left the geolocation
             }
 
             @Override
             public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
-                // Required for GeoFirestore
+                // For each document in query that has moved within the geolocation
             }
 
             @Override
@@ -79,9 +80,10 @@ public class FirestoreHelper {
 
             @Override
             public void onGeoQueryReady() {
-                // TODO: Sort adapter by timestamp
+                // Fires when all documents, if any, have been loaded
 
-                // Update adapter
+                // Sorts post objects in adapter using timestamps
+                adapter.sortByTimestamp();
                 adapter.notifyDataSetChanged();
                 Log.w("DocumentSnapshot", "Loaded documents from Firestore");
             }
@@ -98,7 +100,7 @@ public class FirestoreHelper {
         // Remove posts from adapter if any exist
         adapter.clear();
 
-        // Get posts from database
+        // Get posts from database based on current user's id and orders by timestamp
         db.collection(POSTS_COLLECTION)
                 .whereEqualTo(USERID, FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
@@ -108,21 +110,19 @@ public class FirestoreHelper {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Log.d(TAG, document.getId() + " => " + document.getData());
+                                 Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
 
                                 // Add post to adapter
                                 Map<String, Object> data = new HashMap<>(document.getData());
                                 Post item = new Post(data);
                                 adapter.add(item);
                             }
+                            adapter.notifyDataSetChanged();
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
                         }
                     }
                 });
-
-        // Update adapter
-        adapter.notifyDataSetChanged();
     }
 
     public static void addToDB(final FragmentActivity activity, final FirebaseFirestore db, final Post item) {
@@ -141,7 +141,7 @@ public class FirestoreHelper {
                     public void onSuccess(DocumentReference documentReference) {
                         // Log.d("DocumentSnapshot added with ID: " + documentReference.getId());
 
-                        // Add geohash to post for geolocation queries
+                        // Add geohash to post we just added for geoqueries
                         CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
                         GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
                         geoFirestore.setLocation(documentReference.getId(), new GeoPoint(item.getLatitude(), item.getLongitude()));

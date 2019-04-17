@@ -17,8 +17,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = PostViewFragment.class.getCanonicalName();
 
+    // Post object for this view fragment
     private Post item;
 
+    // UI Objects
     private TextView mTitle;
     private TextView mTimestamp;
     private TextView mMessage;
@@ -41,7 +43,7 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
 
         // Set text for TextView objects for this post
         mTitle.setText(item.getTitle());
-        mTimestamp.setText(item.getTimestamp().toString());
+        mTimestamp.setText(item.getFormattedTimestamp());
         mMessage.setText(item.getMessage());
 
         // Setup map
@@ -57,6 +59,6 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         // Position location coordinates on map when we have the response from Google Maps API
         LatLng location = new LatLng(item.getLatitude(), item.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16.0f));
     }
 }

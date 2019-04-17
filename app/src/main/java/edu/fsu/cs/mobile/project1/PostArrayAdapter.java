@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PostArrayAdapter extends ArrayAdapter<Post> {
     private Context mContext;
@@ -60,7 +61,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
 
         viewHolder.title.setText(item.getTitle());
         viewHolder.message.setText(sanitizedMessage); // get first 144 characters
-        viewHolder.timestamp.setText(item.getTimestamp().toString());
+        viewHolder.timestamp.setText(item.getFormattedTimestamp());
 
         // OnClickListener for each post in adapter
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -115,30 +116,35 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         return -1;
     }
 
-
     @Override
     public void add(@Nullable Post item) {
+        // Add item or set existing item
         int idx = getPosition(item);
         if(idx >= 0) {
             postList.set(idx, item);
         } else {
             postList.add(item);
         }
-        notifyDataSetChanged();
     }
 
     @Override
     public void remove(@Nullable Post item) {
+        // Remove item at specific index
         int idx = getPosition(item);
         if(idx >= 0 && idx < postList.size()) {
             postList.remove(idx);
         }
-        notifyDataSetChanged();
     }
 
     @Override
     public void clear() {
+        // Clears all item from ArrayList
         postList.clear();
         notifyDataSetChanged();
+    }
+
+    public void sortByTimestamp() {
+        // Sorts using Comparable in Posts class by timestamp date
+        Collections.sort(postList, Collections.reverseOrder());
     }
 }
