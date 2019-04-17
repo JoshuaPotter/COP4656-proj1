@@ -51,7 +51,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
         super.onCreate(savedInstanceState);
 
         // Get the current latitude and longitude
-        requestLocationPermissions();
         getLatLong();
 
         // Connect to Firestore DB
@@ -138,6 +137,8 @@ public class PostCreateFragment extends Fragment implements LocationListener {
     }
 
     public void getLatLong() {
+        requestLocationPermissions();
+
         // Get current location coordinates
         try {
             Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);

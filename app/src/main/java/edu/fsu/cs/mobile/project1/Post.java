@@ -7,6 +7,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -29,8 +31,8 @@ public class Post implements Parcelable {
         this.message = (String) data.get(FirestoreHelper.MESSAGE);
         this.userid = (String) data.get(FirestoreHelper.USERID);
         this.timestamp = ((Timestamp) data.get(FirestoreHelper.TIMESTAMP)).toDate();
-        this.latitude = ((Double) data.get(FirestoreHelper.LATITUDE));
-        this.longitude = ((Double) data.get(FirestoreHelper.LONGITUDE));
+        this.latitude = ((ArrayList<Double>) data.get(FirestoreHelper.LOCATION)).get(0);
+        this.longitude = ((ArrayList<Double>) data.get(FirestoreHelper.LOCATION)).get(1);
     }
 
     public Post(String title, String message, double latitude, double longitude,

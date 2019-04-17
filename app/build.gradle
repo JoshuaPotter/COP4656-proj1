@@ -34,6 +34,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.8'
     // Firestore
     implementation 'com.google.firebase:firebase-firestore:18.2.0'
+    // GeoFirestore
+    implementation 'com.github.imperiumlabs:GeoFirestore-Android:v1.2.1'
     // Google Sign in
     implementation 'com.google.firebase:firebase-auth:16.2.1'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'

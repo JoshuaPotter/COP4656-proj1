@@ -13,13 +13,19 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.imperiumlabs.geofirestore.GeoFirestore;
+import org.imperiumlabs.geofirestore.GeoQuery;
+import org.imperiumlabs.geofirestore.GeoQueryDataEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,50 +34,63 @@ public class FirestoreHelper {
     // Collection Title
     public static final String POSTS_COLLECTION = "posts";
 
+    // 32 km (~20 miles) radius
+    public static final double RADIUS = 32;
+
     // Field Titles
     public static final String TITLE = "Title";
     public static final String MESSAGE = "Message";
     public static final String USERID = "User ID";
     public static final String TIMESTAMP = "Timestamp";
-    public static final String LOCATION = "Location";
-    public static final String LATITUDE = "Latitude";
-    public static final String LONGITUDE = "Longitude";
+    public static final String LOCATION = "l";
 
     // Get latest posts in current location
     public static void getPosts(final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
-        // Convert latitude and longitude to 1 mile
-        final double latitudeInDecimalDegrees = 69.172;
-        final double longitudeInDecimalDegrees = Math.cos(latitude) * latitudeInDecimalDegrees;
-        final double latitudeInMile = 1 / latitudeInDecimalDegrees;
-        final double longitudeInMile = 1 / longitudeInDecimalDegrees;
-
         // Remove posts from adapter if any exist
         adapter.clear();
 
-        // Get posts from database
-        db.collection(POSTS_COLLECTION)
-                .orderBy(TIMESTAMP, Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Log.d(TAG, document.getId() + " => " + document.getData());
+        // Get posts from database based on latitude and longitude parameters using GeoFirestore-Android library
+        //   Source: https://github.com/imperiumlabs/GeoFirestore-Android
+        CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
+        GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
+        GeoQuery geoQuery = geoFirestore.queryAtLocation(new GeoPoint(latitude, longitude), RADIUS);
+        geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
+            @Override
+            public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                Map<String, Object> data = documentSnapshot.getData();
+                adapter.add(new Post(data));
+                Log.w("DocumentSnapshot", data.toString());
+            }
 
-                                // Add post to adapter
-                                Map<String, Object> data = new HashMap<>(document.getData());
-                                Post item = new Post(data);
-                                adapter.add(item);
-                            }
-                        } else {
-                            Log.w("Firestore error: ", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+            @Override
+            public void onDocumentExited(DocumentSnapshot documentSnapshot) {
+                // Required for GeoFirestore
+            }
 
-        // Update adapter
-        adapter.notifyDataSetChanged();
+            @Override
+            public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                // Required for GeoFirestore
+            }
+
+            @Override
+            public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                // Required for GeoFirestore
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                // TODO: Sort adapter by timestamp
+
+                // Update adapter
+                adapter.notifyDataSetChanged();
+                Log.w("DocumentSnapshot", "Loaded documents from Firestore");
+            }
+
+            @Override
+            public void onGeoQueryError(Exception e) {
+                Log.w("DocumentSnapshot", "Error loading documents from Firestore " + e.getLocalizedMessage());
+            }
+        });
     }
 
     // Get current user's posts
@@ -109,20 +128,23 @@ public class FirestoreHelper {
     public static void addToDB(final FragmentActivity activity, final FirebaseFirestore db, final Post item) {
         // Setup Map object for Firestore
         Map<String, Object> data = new HashMap<>();
-        data.put(LATITUDE, item.getLatitude());
-        data.put(LONGITUDE, item.getLongitude());
         data.put(TIMESTAMP, FieldValue.serverTimestamp());
         data.put(TITLE, item.getTitle());
         data.put(MESSAGE, item.getMessage());
         data.put(USERID, item.getUserid());
 
-        // Add to Firestore collection called "posts"
+        // Add map object to Firestore collection
         db.collection(FirestoreHelper.POSTS_COLLECTION)
                 .add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-//                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        // Log.d("DocumentSnapshot added with ID: " + documentReference.getId());
+
+                        // Add geohash to post for geolocation queries
+                        CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
+                        GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
+                        geoFirestore.setLocation(documentReference.getId(), new GeoPoint(item.getLatitude(), item.getLongitude()));
 
                         // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = activity.getSupportFragmentManager();

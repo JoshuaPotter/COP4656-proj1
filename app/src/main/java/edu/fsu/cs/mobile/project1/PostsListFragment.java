@@ -8,7 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -46,7 +45,6 @@ public class PostsListFragment extends Fragment implements LocationListener {
         super.onViewCreated(view, savedInstanceState);
 
         // Get current location coordinates
-        requestLocationPermissions();
         getLatLong();
 
         // Connect to Firestore DB
@@ -123,6 +121,8 @@ public class PostsListFragment extends Fragment implements LocationListener {
     }
 
     public void getLatLong() {
+        requestLocationPermissions();
+
         // Get current location coordinates
         try {
             Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
