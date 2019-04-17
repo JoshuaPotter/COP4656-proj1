@@ -8,6 +8,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.sql.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -119,6 +120,12 @@ public class Post implements Parcelable, Comparable<Post> {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getFormattedTimestamp() {
+        // Returns timestamp in AM/PM format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+        return dateFormat.format(timestamp);
     }
 
     public String getUserid() {
