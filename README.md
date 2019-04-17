@@ -1,7 +1,7 @@
 # COP4656 Project 1 & 2
 Recreation of Yik Yak app for COP4656
 
-# Sources & Libraries
+## Libraries & Sources
  * Firebase & Firestore
  * Google Maps API
  * Google Sign-In Authentication
