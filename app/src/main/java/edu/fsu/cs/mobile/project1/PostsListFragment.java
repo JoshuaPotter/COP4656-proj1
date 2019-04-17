@@ -1,35 +1,38 @@
 package edu.fsu.cs.mobile.project1;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
-public class PostsListFragment extends Fragment {
+public class PostsListFragment extends Fragment implements LocationListener {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
 
     private PostArrayAdapter adapter;
     private FirebaseFirestore db;
+
+    // Location
+    private LocationManager manager;
+    private double latitude;
+    private double longitude;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +43,10 @@ public class PostsListFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Get current location coordinates
+        getLatLong();
+
         // Connect to Firestore DB
         db = FirebaseFirestore.getInstance();
 
@@ -48,7 +55,7 @@ public class PostsListFragment extends Fragment {
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
         // Get latest posts from Firestore
-        FirestoreHelper.getPosts(adapter, db);
+        FirestoreHelper.getPosts(adapter, db, latitude, longitude);
 
         // Assign adapter to the ListView
         list.setAdapter(adapter);
@@ -60,7 +67,7 @@ public class PostsListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // Get latest posts
-                FirestoreHelper.getPosts(adapter, db);
+                FirestoreHelper.getPosts(adapter, db, latitude, longitude);
 
                 // Show loader for 2 seconds
                 new Handler().postDelayed(new Runnable() {
@@ -75,5 +82,55 @@ public class PostsListFragment extends Fragment {
 
     public PostArrayAdapter getAdapter() {
         return adapter;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        // If location changes, update coordinates
+        Log.i("Message: ","Location changed, " + location.getAccuracy() + " , " + location.getLatitude()+ "," + location.getLongitude());
+
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // Required function by LocationListener
+    }
+    @Override
+    public void onProviderEnabled(String provider) {
+        // Required function by LocationListener
+    }
+    @Override
+    public void onProviderDisabled(String provider) {
+        // Required function by LocationListener
+    }
+
+    public void requestLocationPermissions() {
+        // Request location permissions for latitude and longitude
+        manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted, request permission
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+            }
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+        } catch(SecurityException e) {
+            Log.e(TAG, "Error creating location service", e);
+        }
+    }
+
+    public void getLatLong() {
+        requestLocationPermissions();
+
+        // Get current location coordinates
+        try {
+            Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        } catch(SecurityException e) {
+            Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 }

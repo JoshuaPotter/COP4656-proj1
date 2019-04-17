@@ -57,6 +57,6 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         // Position location coordinates on map when we have the response from Google Maps API
         LatLng location = new LatLng(item.getLatitude(), item.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18.0f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15.0f));
     }
 }
