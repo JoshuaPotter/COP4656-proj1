@@ -7,11 +7,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,16 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class PostCreateFragment extends Fragment implements LocationListener {
@@ -60,20 +50,12 @@ public class PostCreateFragment extends Fragment implements LocationListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the current latitude and longitude
+        requestLocationPermissions();
+        getLatLong();
+
         // Connect to Firestore DB
         db = FirebaseFirestore.getInstance();
-
-        // Request location permissions for latitude and longitude
-        manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-        try {
-            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted, request permission
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
-            }
-            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
-        } catch(SecurityException e) {
-            Log.e(TAG, "Error creating location service", e);
-        }
 
         // Get UI Objects
         et_title = view.findViewById(R.id.editText_title);
@@ -109,16 +91,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
     }
 
     public void createPost(String title, String message) {
-        // Get current location coordinates
-        try {
-            Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            this.latitude = location.getLatitude();
-            this.longitude = location.getLongitude();
-        } catch(SecurityException e) {
-            Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
-                    .show();
-        }
-
         // Get User ID
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -134,8 +106,8 @@ public class PostCreateFragment extends Fragment implements LocationListener {
         // If location changes, update coordinates
         Log.i("Message: ","Location changed, " + location.getAccuracy() + " , " + location.getLatitude()+ "," + location.getLongitude());
 
-        this.latitude = location.getLatitude();
-        this.longitude = location.getLongitude();
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
     }
 
     @Override
@@ -149,5 +121,31 @@ public class PostCreateFragment extends Fragment implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         // Required function by LocationListener
+    }
+
+    public void requestLocationPermissions() {
+        // Request location permissions for latitude and longitude
+        manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted, request permission
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+            }
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+        } catch(SecurityException e) {
+            Log.e(TAG, "Error creating location service", e);
+        }
+    }
+
+    public void getLatLong() {
+        // Get current location coordinates
+        try {
+            Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        } catch(SecurityException e) {
+            Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 }
