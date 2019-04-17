@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
-public class Post implements Parcelable {
+public class Post implements Parcelable, Comparable<Post> {
     private String title;
     private String message;
     private double latitude;
@@ -127,5 +127,10 @@ public class Post implements Parcelable {
 
     public void setUserid(String userid) {
         this.userid = userid;
+    }
+
+    @Override
+    public int compareTo(Post item) {
+        return getTimestamp().compareTo(item.getTimestamp());
     }
 }
