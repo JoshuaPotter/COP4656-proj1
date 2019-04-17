@@ -34,6 +34,8 @@ public class FirestoreHelper {
     public static final String USERID = "User ID";
     public static final String TIMESTAMP = "Timestamp";
     public static final String LOCATION = "Location";
+    public static final String LATITUDE = "Latitude";
+    public static final String LONGITUDE = "Longitude";
 
     // Get latest posts in current location
     public static void getPosts(final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
@@ -107,7 +109,8 @@ public class FirestoreHelper {
     public static void addToDB(final FragmentActivity activity, final FirebaseFirestore db, final Post item) {
         // Setup Map object for Firestore
         Map<String, Object> data = new HashMap<>();
-        data.put(LOCATION, new GeoPoint(item.getLatitude(), item.getLongitude()));
+        data.put(LATITUDE, item.getLatitude());
+        data.put(LONGITUDE, item.getLongitude());
         data.put(TIMESTAMP, FieldValue.serverTimestamp());
         data.put(TITLE, item.getTitle());
         data.put(MESSAGE, item.getMessage());

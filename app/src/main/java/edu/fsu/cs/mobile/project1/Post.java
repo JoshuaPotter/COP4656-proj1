@@ -31,6 +31,17 @@ public class Post implements Parcelable {
         this.latitude = ((GeoPoint) data.get(FirestoreHelper.LOCATION)).getLatitude();
         this.longitude = ((GeoPoint) data.get(FirestoreHelper.LOCATION)).getLongitude();
         this.timestamp = ((Timestamp) data.get(FirestoreHelper.TIMESTAMP)).toDate();
+
+        // Project 1 uses GeoPoints for location
+        // Project 2 uses Latitude and Longitude doubles for location
+        // This will ensure we capture both methods for the Post object
+        if(data.containsKey(FirestoreHelper.LOCATION)) {
+            this.latitude = ((GeoPoint) data.get(FirestoreHelper.LOCATION)).getLatitude();
+            this.longitude = ((GeoPoint) data.get(FirestoreHelper.LOCATION)).getLongitude();
+        } else if (data.containsKey(FirestoreHelper.LATITUDE) && data.containsKey(FirestoreHelper.LONGITUDE)) {
+            this.latitude = ((Double) data.get(FirestoreHelper.LATITUDE));
+            this.longitude = ((Double) data.get(FirestoreHelper.LONGITUDE));
+        }
     }
 
     public Post(String title, String message, double latitude, double longitude,
