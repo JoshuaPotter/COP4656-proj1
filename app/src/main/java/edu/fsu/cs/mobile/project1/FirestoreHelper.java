@@ -38,10 +38,10 @@ public class FirestoreHelper {
     // Get latest posts in current location
     public static void getPosts(final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
         // Convert latitude and longitude to 1 mile
-        final double degreeLatitude = 69.172;
-        final double degreeLongitude = Math.cos(latitude) * degreeLatitude;
-        final double LatitudeInMile = 1 / degreeLatitude;
-        final double longitudeInMile = 1 / degreeLongitude;
+        final double latitudeInDecimalDegrees = 69.172;
+        final double longitudeInDecimalDegrees = Math.cos(latitude) * latitudeInDecimalDegrees;
+        final double latitudeInMile = 1 / latitudeInDecimalDegrees;
+        final double longitudeInMile = 1 / longitudeInDecimalDegrees;
 
         // Remove posts from adapter if any exist
         adapter.clear();
