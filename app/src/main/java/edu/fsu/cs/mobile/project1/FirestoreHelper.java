@@ -79,7 +79,8 @@ public class FirestoreHelper {
 
             @Override
             public void onGeoQueryReady() {
-                // TODO: Sort adapter by timestamp
+                // Sorts using timestamps
+                adapter.sort();
 
                 // Update adapter
                 adapter.notifyDataSetChanged();

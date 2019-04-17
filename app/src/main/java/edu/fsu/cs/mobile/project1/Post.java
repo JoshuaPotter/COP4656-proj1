@@ -131,6 +131,7 @@ public class Post implements Parcelable, Comparable<Post> {
 
     @Override
     public int compareTo(Post item) {
+        // Comparable sort by timestamp
         return getTimestamp().compareTo(item.getTimestamp());
     }
 }
