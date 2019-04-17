@@ -1,6 +1,12 @@
 # COP4656 Project 1 & 2
 Recreation of Yik Yak app for COP4656
 
+# Sources & Libraries
+ * Firebase & Firestore
+ * Google Maps API
+ * Google Sign-In Authentication
+ * [GeoFirestore Android library](https://github.com/imperiumlabs/GeoFirestore-Android/) for geohashing with Firestore
+
 # User Flow
 [Click here for the intended design of the app](https://app.flowmapp.com/share/d8a6151a00e03209277bc930262ab10a), this will help organize how we build the application
 
