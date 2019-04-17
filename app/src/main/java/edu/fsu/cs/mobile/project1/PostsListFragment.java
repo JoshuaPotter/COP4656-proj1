@@ -69,7 +69,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
             @Override
             public void onRefresh() {
                 // Get latest posts
-                FirestoreHelper.getPosts(adapter, db);
+                FirestoreHelper.getPosts(adapter, db, latitude, longitude);
 
                 // Show loader for 2 seconds
                 new Handler().postDelayed(new Runnable() {

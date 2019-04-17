@@ -40,8 +40,8 @@ public class FirestoreHelper {
         // Convert latitude and longitude to 1 mile
         final double degreeLatitude = 69.172;
         final double degreeLongitude = Math.cos(latitude) * degreeLatitude;
-        final double MILE_LONGITUDE = 1 / degreeLongitude;
-        final double MILE_LATITUDE = 1 / degreeLatitude;
+        final double LatitudeInMile = 1 / degreeLatitude;
+        final double longitudeInMile = 1 / degreeLongitude;
 
         // Remove posts from adapter if any exist
         adapter.clear();
@@ -104,7 +104,7 @@ public class FirestoreHelper {
         adapter.notifyDataSetChanged();
     }
 
-    public static void addToDB(final FragmentActivity activity, final FirebaseFirestore db, Post item) {
+    public static void addToDB(final FragmentActivity activity, final FirebaseFirestore db, final Post item) {
         // Setup Map object for Firestore
         Map<String, Object> data = new HashMap<>();
         data.put(LOCATION, new GeoPoint(item.getLatitude(), item.getLongitude()));
@@ -124,7 +124,7 @@ public class FirestoreHelper {
                         // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = activity.getSupportFragmentManager();
                         PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
-                        FirestoreHelper.getPosts(fragment.getAdapter(), db); // gets latest posts
+                        FirestoreHelper.getPosts(fragment.getAdapter(), db, item.getLatitude(), item.getLongitude()); // gets latest posts
 
                         // Go back to list
                         activity.getSupportFragmentManager().popBackStack();
