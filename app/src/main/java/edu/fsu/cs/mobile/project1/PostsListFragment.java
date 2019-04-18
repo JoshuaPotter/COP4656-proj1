@@ -38,8 +38,10 @@ public class PostsListFragment extends Fragment implements LocationListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Get arguments for which posts to show
         bundle = getArguments();
+
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_posts_list, container, false);
     }
 
