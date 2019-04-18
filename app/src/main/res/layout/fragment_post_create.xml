@@ -10,15 +10,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/create_post"
-        android:textColor="#1d1d1d"
-        android:textSize="24sp"
-        tools:text="Create Post" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="@string/title"
         android:textSize="18sp" />
 
