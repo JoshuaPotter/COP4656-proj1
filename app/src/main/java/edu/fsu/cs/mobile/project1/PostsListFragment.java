@@ -25,9 +25,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PostsListFragment extends Fragment implements LocationListener {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
+    public static final String SHOW_USERS_POSTS_FLAG = "showUsersPost";
 
     private PostArrayAdapter adapter;
     private FirebaseFirestore db;
+    private Bundle bundle;
 
     // Location
     private LocationManager manager;
@@ -36,6 +38,9 @@ public class PostsListFragment extends Fragment implements LocationListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Get arguments for which posts to show
+        bundle = getArguments();
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_posts_list, container, false);
     }
@@ -54,8 +59,14 @@ public class PostsListFragment extends Fragment implements LocationListener {
         ListView list = view.findViewById(R.id.listView_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
-        // Get latest posts from Firestore
-        FirestoreHelper.getPosts(adapter, db, latitude, longitude);
+        // Check to see if we should show user's posts or posts in current location
+        if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
+            // Get user's posts
+            FirestoreHelper.getMyPosts(adapter, db);
+        } else {
+            // Get latest posts in current location from Firestore
+            FirestoreHelper.getPosts(adapter, db, latitude, longitude);
+        }
 
         // Assign adapter to the ListView
         list.setAdapter(adapter);

@@ -110,7 +110,7 @@ public class FirestoreHelper {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                 Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
+                                // Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
 
                                 // Add post to adapter
                                 Map<String, Object> data = new HashMap<>(document.getData());
@@ -141,7 +141,7 @@ public class FirestoreHelper {
                     public void onSuccess(DocumentReference documentReference) {
                         // Log.d("DocumentSnapshot added with ID: " + documentReference.getId());
 
-                        // Add geohash to post we just added for geoqueries
+                        // Add geohash to post just added for geoqueries
                         CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
                         GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
                         geoFirestore.setLocation(documentReference.getId(), new GeoPoint(item.getLatitude(), item.getLongitude()));
