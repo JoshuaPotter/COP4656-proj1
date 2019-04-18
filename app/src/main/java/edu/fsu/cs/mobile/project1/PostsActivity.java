@@ -87,13 +87,18 @@ public class PostsActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean toViewYourPosts(){
+    private boolean toViewYourPosts() {
         // Display PostViewFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
+        // Set arguments
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PostsListFragment.SHOW_USERS_POSTS_FLAG, true);
+
         // Create new fragment
-        YourPostsFragment fragment = new YourPostsFragment();
+        PostsListFragment fragment = new PostsListFragment();
+        fragment.setArguments(bundle);
 
         // Get current fragment
         Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
