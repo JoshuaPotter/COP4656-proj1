@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PostCreateFragment extends Fragment implements LocationListener {
     public static final String TAG = PostCreateFragment.class.getCanonicalName();
+    public static final String TITLE = "Create Post";
 
     private FirebaseFirestore db;
 
@@ -49,6 +51,9 @@ public class PostCreateFragment extends Fragment implements LocationListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set activity title
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(TITLE);
 
         // Get the current latitude and longitude
         getLatLong();
