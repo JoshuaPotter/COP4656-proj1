@@ -51,6 +51,8 @@ public class PostsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO: If current fragment matches option menu selection, skip function and show Toast
+
         int i = item.getItemId();
         boolean state = false;
         if(i == R.id.menuItem_sign_out) {
