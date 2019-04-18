@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class PostsListFragment extends Fragment implements LocationListener {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
     public static final String SHOW_USERS_POSTS_FLAG = "showUsersPost";
+    public String TITLE;
 
     private PostArrayAdapter adapter;
     private FirebaseFirestore db;
@@ -40,6 +42,11 @@ public class PostsListFragment extends Fragment implements LocationListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Get arguments for which posts to show
         bundle = getArguments();
+        if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
+            TITLE = "Your Posts";
+        } else {
+            TITLE = "Posts";
+        }
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_posts_list, container, false);
@@ -48,6 +55,9 @@ public class PostsListFragment extends Fragment implements LocationListener {
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Set activity title
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(TITLE);
 
         // Get current location coordinates
         getLatLong();

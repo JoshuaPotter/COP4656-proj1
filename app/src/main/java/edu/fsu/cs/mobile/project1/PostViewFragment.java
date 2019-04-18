@@ -2,6 +2,7 @@ package edu.fsu.cs.mobile.project1;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = PostViewFragment.class.getCanonicalName();
+    public static String TITLE = "View Post";
 
     // Post object for this view fragment
     private Post item;
@@ -29,6 +31,9 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post_view, container, false);
+
+        // Set activity title
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(TITLE);
 
         // Grab post arguments
         Bundle bundle = getArguments();

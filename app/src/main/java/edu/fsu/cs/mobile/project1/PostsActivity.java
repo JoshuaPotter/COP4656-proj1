@@ -40,6 +40,9 @@ public class PostsActivity extends AppCompatActivity {
         PostsListFragment fragment = new PostsListFragment();
         transaction.add(R.id.frameLayout_posts, fragment, PostsListFragment.TAG);
         transaction.commit();
+
+        // Set activity title
+        getSupportActionBar().setTitle(fragment.TITLE);
     }
 
     @Override
@@ -65,7 +68,6 @@ public class PostsActivity extends AppCompatActivity {
         } else if (i == R.id.menuItem_view_your_posts){
             // View Your Posts menu item
             state = toViewYourPosts();
-
         }
         return state;
     }
