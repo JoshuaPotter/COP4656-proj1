@@ -46,7 +46,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // Get current location coordinates
@@ -62,10 +62,10 @@ public class PostsListFragment extends Fragment implements LocationListener {
         // Check to see if we should show user's posts or posts in current location
         if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
             // Get user's posts
-            FirestoreHelper.getMyPosts(adapter, db);
+            FirestoreHelper.getMyPosts(view, adapter, db);
         } else {
             // Get latest posts in current location from Firestore
-            FirestoreHelper.getPosts(adapter, db, latitude, longitude);
+            FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
         }
 
         // Assign adapter to the ListView
@@ -78,7 +78,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
             @Override
             public void onRefresh() {
                 // Get latest posts
-                FirestoreHelper.getPosts(adapter, db, latitude, longitude);
+                FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
 
                 // Show loader for 2 seconds
                 new Handler().postDelayed(new Runnable() {
