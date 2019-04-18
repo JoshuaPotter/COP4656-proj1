@@ -59,14 +59,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         ListView list = view.findViewById(R.id.listView_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
-        // Check to see if we should show user's posts or posts in current location
-        if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
-            // Get user's posts
-            FirestoreHelper.getMyPosts(view, adapter, db);
-        } else {
-            // Get latest posts in current location from Firestore
-            FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
-        }
+        getPosts(view);
 
         // Assign adapter to the ListView
         list.setAdapter(adapter);
@@ -77,8 +70,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Get latest posts
-                FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
+                getPosts(view);
 
                 // Show loader for 2 seconds
                 new Handler().postDelayed(new Runnable() {
@@ -142,6 +134,17 @@ public class PostsListFragment extends Fragment implements LocationListener {
         } catch(SecurityException e) {
             Toast.makeText(getActivity(), "GPS cannot determine your location", Toast.LENGTH_SHORT)
                     .show();
+        }
+    }
+
+    private void getPosts(View view) {
+        // Check to see if we should show user's posts or posts in current location
+        if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
+            // Get user's posts
+            FirestoreHelper.getMyPosts(view, adapter, db);
+        } else {
+            // Get latest posts in current location from Firestore
+            FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
         }
     }
 }
