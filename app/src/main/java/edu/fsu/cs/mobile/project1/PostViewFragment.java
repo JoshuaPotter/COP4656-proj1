@@ -1,5 +1,6 @@
 package edu.fsu.cs.mobile.project1;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -63,7 +65,12 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         // Position location coordinates on map when we have the response from Google Maps API
-        LatLng location = new LatLng(item.getLatitude(), item.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16.0f));
+        LatLng postLatLng = new LatLng(item.getLatitude(), item.getLongitude());
+
+        //Add marker at post location, set text to post title
+        map.addMarker(new MarkerOptions().position(postLatLng).title(item.getTitle()));
+        //Draw circle around marker w/ radius of 100 ft
+        map.addCircle(new CircleOptions().center(postLatLng).radius(30.48).fillColor(Color.parseColor("#4A89F3")).strokeColor(Color.BLUE));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(postLatLng, 16.0f));
     }
 }
