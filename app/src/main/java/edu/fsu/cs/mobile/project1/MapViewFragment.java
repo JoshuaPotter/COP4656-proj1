@@ -1,52 +1,60 @@
 package edu.fsu.cs.mobile.project1;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapViewFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapViewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MapViewFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import org.imperiumlabs.geofirestore.GeoFirestore;
+import org.imperiumlabs.geofirestore.GeoQuery;
+import org.imperiumlabs.geofirestore.GeoQueryDataEventListener;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import java.util.ArrayList;
 
-    private OnFragmentInteractionListener mListener;
+import javax.annotation.Nullable;
+
+import static edu.fsu.cs.mobile.project1.FirestoreHelper.POSTS_COLLECTION;
+import static edu.fsu.cs.mobile.project1.FirestoreHelper.RADIUS;
+
+public class MapViewFragment extends Fragment implements OnMapReadyCallback {
+    public static final String TAG = MapViewFragment.class.getCanonicalName();
+    private GoogleMap mMap;
+    private MapView mapView;
+    private ArrayList<Post> postArrayList;
+    private double latitude;
+    private double longitude;
 
     public MapViewFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapViewFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static MapViewFragment newInstance(String param1, String param2) {
         MapViewFragment fragment = new MapViewFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,55 +62,86 @@ public class MapViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_view, container, false);
+        View view=inflater.inflate(R.layout.fragment_map_view, container, false);
+        mapView=(MapView)view.findViewById(R.id.mapFragMap);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(this);
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    private void getPosts() {
+            postArrayList.clear();
+            FirebaseFirestore db=FirebaseFirestore.getInstance();
+            CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
+            GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
+            GeoQuery geoQuery = geoFirestore.queryAtLocation(new GeoPoint(latitude,longitude),RADIUS);
+            geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
+                @Override
+                public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                    Post currentPost=new Post(documentSnapshot.getData());
+                    LatLng temp=new LatLng(currentPost.getLatitude(),currentPost.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(temp).title(currentPost.getTitle()));
+                }
+
+                @Override
+                public void onDocumentExited(DocumentSnapshot documentSnapshot) {
+
+                }
+
+                @Override
+                public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+
+                }
+
+                @Override
+                public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+
+                }
+
+                @Override
+                public void onGeoQueryReady() {
+
+                }
+
+                @Override
+                public void onGeoQueryError(Exception e) {
+
+                }
+            });
+    }
+
+    private void getLocation() {
+        try {
+            LocationManager locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude=location.getLatitude();
+            longitude=location.getLongitude();
+        }
+        catch (SecurityException e){
+            Toast.makeText(getContext(),"Unable to determine GPS location",Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+getLocation();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        postArrayList=new ArrayList<Post>();
+        getPosts();
+        LatLng user=new LatLng(latitude,longitude);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.setMyLocationEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,17));
     }
 }
