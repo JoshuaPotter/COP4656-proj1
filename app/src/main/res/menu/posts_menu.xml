@@ -13,4 +13,8 @@
         android:id="@+id/menuItem_sign_out"
         android:title="@string/sign_out" />
 
+    <item
+        android:id="@+id/menuItem_delete_account"
+        android:title="Delete Account" />
+
 </menu>
