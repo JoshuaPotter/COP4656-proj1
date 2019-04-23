@@ -171,4 +171,12 @@ public class FirestoreHelper {
                     }
                 });
     }
+
+    public static void deleteFromDB(final FragmentActivity activity, final FirebaseFirestore db, final String id) {
+        db.collection(FirestoreHelper.POSTS_COLLECTION)
+                .document(id)
+                .delete();
+
+        Toast.makeText(activity, "Deleted post", Toast.LENGTH_SHORT);
+    }
 }
