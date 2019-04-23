@@ -26,8 +26,10 @@ public class PostsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_posts);
 
         // Setup bottom navigation
-        BottomNavigationView bottomNavigation = findViewById(R.id.posts_bottom_navigation);
+        // TODO: Add listener to fragmentmanager to update bottom nav on back buttom press
+        // TODO: https://stackoverflow.com/questions/53813235/button-not-change-on-back-button-press-in-bottomnavigationview
         final AppCompatActivity activity = this;
+        BottomNavigationView bottomNavigation = findViewById(R.id.posts_bottom_navigation);
         bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
