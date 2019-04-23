@@ -99,7 +99,7 @@ public class PostCreateFragment extends Fragment implements LocationListener {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // To be sent to firestore database, null timestamp will autopopulate by Firestore
-        Post item = new Post(title, message, latitude, longitude, null, userId);
+        Post item = new Post(title, message, latitude, longitude, null, userId, 0);
 
         // Add to Firestore DB
         FirestoreHelper.addToDB(getActivity(), db, item);

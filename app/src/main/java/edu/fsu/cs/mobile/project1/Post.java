@@ -17,6 +17,7 @@ public class Post implements Parcelable, Comparable<Post> {
     private double latitude;
     private double longitude;
     private String userid;
+    //private int upvotes;
 
     @ServerTimestamp
     private Date timestamp;
@@ -32,16 +33,18 @@ public class Post implements Parcelable, Comparable<Post> {
         this.timestamp = ((Timestamp) data.get(FirestoreHelper.TIMESTAMP)).toDate();
         this.latitude = ((ArrayList<Double>) data.get(FirestoreHelper.LOCATION)).get(0);
         this.longitude = ((ArrayList<Double>) data.get(FirestoreHelper.LOCATION)).get(1);
+        //this.upvotes = (int) data.get(FirestoreHelper.UPVOTES);
     }
 
     public Post(String title, String message, double latitude, double longitude,
-                Date timestamp, String userid) {
+                Date timestamp, String userid, int upvotes) {
         this.title = title;
         this.message = message;
         this.userid = userid;
         this.latitude = latitude;
         this.longitude = longitude;
         this.timestamp = timestamp;
+        //this.upvotes = upvotes;
     }
 
     protected Post(Parcel in) {
@@ -51,6 +54,7 @@ public class Post implements Parcelable, Comparable<Post> {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.timestamp = (Date) in.readSerializable();
+        //this.upvotes = in.readInt();
     }
 
     @Override
@@ -61,6 +65,7 @@ public class Post implements Parcelable, Comparable<Post> {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeSerializable(timestamp);
+        //dest.writeInt(upvotes);
     }
 
     @Override
@@ -119,6 +124,10 @@ public class Post implements Parcelable, Comparable<Post> {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    //public int getUpvotes() { return upvotes; }
+
+    //public void setUpvotes(int upvotes) { this.upvotes = upvotes; }
 
     public String getFormattedTimestamp() {
         // Returns timestamp in AM/PM format
