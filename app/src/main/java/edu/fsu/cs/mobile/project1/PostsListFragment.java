@@ -116,7 +116,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
                 break;
 
             case R.id.posts_map:
-                // ((PostsActivity) getActivity()).toViewPostsMap();
+                // ((PostsActivity) getActivity()).toMapView();
                 break;
         }
         return true;
