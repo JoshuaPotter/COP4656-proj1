@@ -8,6 +8,7 @@
     <string name="google_map_api">AIzaSyC8baJpDFplbZ-0B_EuOgRYCHppdxpTVs8</string>
 
     <!-- Menu -->
+    <string name="map_view">Map View</string>
     <string name="create_post">Create Post</string>
     <string name="view_your_posts">Your Posts</string>
     <string name="sign_out">Sign Out</string>
@@ -21,7 +22,4 @@
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="map_view">Map view</string>
 </resources>

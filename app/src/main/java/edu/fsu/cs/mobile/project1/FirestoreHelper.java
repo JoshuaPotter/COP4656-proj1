@@ -1,6 +1,7 @@
 package edu.fsu.cs.mobile.project1;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,8 +42,8 @@ public class FirestoreHelper {
     // Collection Title
     public static final String POSTS_COLLECTION = "posts";
 
-    // 16 km (~10 miles) radius
-    public static final double RADIUS = 16;
+    // 8km (~5 miles) radius
+    public static final double RADIUS = 8;
 
     // Field Titles
     public static final String TITLE = "Title";
@@ -46,7 +52,7 @@ public class FirestoreHelper {
     public static final String TIMESTAMP = "Timestamp";
     public static final String LOCATION = "l";
 
-    // Get latest posts in current location
+    // Get latest posts from current location in a list arrayadapter
     public static void getPosts(final View view, final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
         // Remove posts from adapter if any exist
         adapter.clear();
@@ -97,6 +103,59 @@ public class FirestoreHelper {
             public void onGeoQueryError(Exception e) {
                 view.findViewById(R.id.animation_loading);
                 Log.w("DocumentSnapshot", "Error loading documents from Firestore " + e.getLocalizedMessage());
+            }
+        });
+    }
+
+    // Get posts from current location in mapview
+    public static void getPosts(final FirebaseFirestore db, final ArrayList<Post> postArrayList, final GoogleMap mMap, final double latitude, final double longitude) {
+        mMap.clear();
+        postArrayList.clear();
+
+        CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
+
+        Circle mapRadius;
+
+        GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
+        GeoQuery geoQuery = geoFirestore.queryAtLocation(new GeoPoint(latitude, longitude), RADIUS);
+        geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
+            @Override
+            public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                Post currentPost = new Post(documentSnapshot.getData());
+                LatLng postLocation = new LatLng(currentPost.getLatitude(),currentPost.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
+                // TODO: add onMarkerClick() event to create intent to view the post in PostViewFragment'
+                // TODO: https://developers.google.com/maps/documentation/android-sdk/marker#marker_click_events
+            }
+
+            @Override
+            public void onDocumentExited(DocumentSnapshot documentSnapshot) {
+                // TODO: remove marker for element
+            }
+
+            @Override
+            public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+
+            }
+
+            @Override
+            public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                // Add circle for user's radius
+                mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(latitude, longitude))
+                    .radius(RADIUS * 1000)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(0x220000FF));
+            }
+
+            @Override
+            public void onGeoQueryError(Exception e) {
+
             }
         });
     }
