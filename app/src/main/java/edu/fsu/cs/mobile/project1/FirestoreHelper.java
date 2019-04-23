@@ -134,7 +134,7 @@ public class FirestoreHelper {
 
             @Override
             public void onDocumentExited(DocumentSnapshot documentSnapshot) {
-                // TODO: remove marker for element
+
             }
 
             @Override
@@ -164,7 +164,7 @@ public class FirestoreHelper {
         });
     }
 
-    // Get current user's posts
+    // Get current user's posts for listview
     public static void getMyPosts(final View view, final PostArrayAdapter adapter, FirebaseFirestore db) {
         // Remove posts from adapter if any exist
         adapter.clear();
@@ -190,6 +190,30 @@ public class FirestoreHelper {
                             // Hide loading animation and show new posts
                             view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
+                        } else {
+                            Log.w("Firestore error: ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    // Get current user's posts for mapview
+    public static void getMyPosts(final FirebaseFirestore db, final GoogleMap mMap) {
+        // Get posts from database based on current user's id and orders by timestamp
+        db.collection(POSTS_COLLECTION)
+                .whereEqualTo(USERID, FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
+
+                                Post currentPost = new Post(document.getData());
+                                LatLng postLocation = new LatLng(currentPost.getLatitude(), currentPost.getLongitude());
+                                mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
+                            }
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
                         }

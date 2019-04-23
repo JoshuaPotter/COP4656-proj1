@@ -23,6 +23,9 @@ import javax.annotation.Nullable;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = MapViewFragment.class.getCanonicalName();
+
+    private Bundle bundle;
+    private FirebaseFirestore db;
     private GoogleMap mMap;
     private MapView mapView;
     private ArrayList<Post> postArrayList;
@@ -41,8 +44,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        bundle = getArguments();
+        db = FirebaseFirestore.getInstance();
 
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
         mapView = (MapView) view.findViewById(R.id.mapFragMap);
         mapView.onCreate(savedInstanceState);
@@ -65,7 +70,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
-getLocation();
+        getLocation();
     }
 
     @Override
@@ -75,7 +80,7 @@ getLocation();
         postArrayList = new ArrayList<Post>();
 
         // Populate map with posts
-        FirestoreHelper.getPosts(db, postArrayList, mMap, latitude, longitude);
+        getPosts();
 
         // Allow user to set their location on the map
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -89,5 +94,17 @@ getLocation();
         // Set user's location
         LatLng user = new LatLng(latitude,longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,12));
+    }
+
+    private void getPosts() {
+        // Check to see if we should show user's posts or posts in current location
+        if(bundle != null && bundle.containsKey(PostsListFragment.SHOW_USERS_POSTS_FLAG)) {
+            // Get user's posts
+            FirestoreHelper.getMyPosts(db, mMap);
+        } else {
+            // Get latest posts in current location from Firestore
+            // Populate map with posts
+            FirestoreHelper.getPosts(db, postArrayList, mMap, latitude, longitude);
+        }
     }
 }
