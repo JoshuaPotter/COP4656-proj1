@@ -77,7 +77,6 @@ public class PostsActivity extends AppCompatActivity {
             //Switch to map view
             state = toMapView();
         } else if (i == R.id.menuItem_delete_account){
-
             AuthHelper.deleteAccount(this, user);
             state = true;
         }

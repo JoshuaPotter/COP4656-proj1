@@ -55,14 +55,17 @@ public final class AuthHelper {
     }
 
     public static void deleteAccount(final Activity activity, FirebaseUser user){
-        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Intent toSignIn = new Intent(activity, MainActivity.class);
-                    activity.startActivity(toSignIn);
-                    activity.finish();
-                }
+        // TODO: get user ID, get all posts, delete all posts that have user ID
+
+        user.delete()
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if(task.isSuccessful()){
+                Intent toSignIn = new Intent(activity, MainActivity.class);
+                activity.startActivity(toSignIn);
+                activity.finish();
+            }
             }
         });
     }
