@@ -1,5 +1,7 @@
 package edu.fsu.cs.mobile.project1;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -8,8 +10,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -68,8 +73,32 @@ public class PostsActivity extends AppCompatActivity {
         } else if (i == R.id.menuItem_view_your_posts){
             // View Your Posts menu item
             state = toViewYourPosts();
+        } else if (i == R.id.menuItem_mapView) {
+            //Switch to map view
+            state = toMapView();
+        } else if (i == R.id.menuItem_delete_account){
+            AuthHelper.deleteAccount(this, user);
+            state = true;
         }
         return state;
+    }
+
+    private boolean toMapView() {
+        FragmentManager manager=getSupportFragmentManager();
+
+        FragmentTransaction transaction=manager.beginTransaction();
+
+        MapViewFragment mapViewFragment=new MapViewFragment();
+
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+        // Hide current fragment and show MapViewFragment
+
+        transaction.addToBackStack(currentFragment.getTag());
+
+        transaction.replace(R.id.frameLayout_posts,mapViewFragment);
+
+        transaction.commit();
+        return true;
     }
 
     private boolean toCreatePost() {

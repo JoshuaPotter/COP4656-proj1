@@ -1,6 +1,7 @@
 package edu.fsu.cs.mobile.project1;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +34,7 @@ import org.imperiumlabs.geofirestore.GeoFirestore;
 import org.imperiumlabs.geofirestore.GeoQuery;
 import org.imperiumlabs.geofirestore.GeoQueryDataEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,10 +42,11 @@ public class FirestoreHelper {
     // Collection Title
     public static final String POSTS_COLLECTION = "posts";
 
-    // 16 km (~10 miles) radius
-    public static final double RADIUS = 16;
+    // 8km (~5 miles) radius
+    public static final double RADIUS = 8;
 
     // Field Titles
+    public static final String ID = "ID";
     public static final String TITLE = "Title";
     public static final String MESSAGE = "Message";
     public static final String USERID = "User ID";
@@ -46,7 +54,7 @@ public class FirestoreHelper {
     public static final String LOCATION = "l";
     //public static final int UPVOTES = 0;
 
-    // Get latest posts in current location
+    // Get latest posts from current location in a list arrayadapter
     public static void getPosts(final View view, final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
         // Remove posts from adapter if any exist
         adapter.clear();
@@ -61,6 +69,7 @@ public class FirestoreHelper {
             public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
                 // For each document in our query within the geolocation, add it to the adapter as a post object
                 Map<String, Object> data = documentSnapshot.getData();
+                data.put(FirestoreHelper.ID, documentSnapshot.getId());
                 adapter.add(new Post(data));
                 Log.w("DocumentSnapshot", data.toString());
             }
@@ -88,7 +97,9 @@ public class FirestoreHelper {
                 adapter.sortByTimestamp();
 
                 // Hide loading animation and show new posts
-                view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                if(view != null) {
+                    view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                }
                 adapter.notifyDataSetChanged();
                 Log.w("DocumentSnapshot", "Loaded documents from Firestore");
             }
@@ -101,7 +112,60 @@ public class FirestoreHelper {
         });
     }
 
-    // Get current user's posts
+    // Get posts from current location in mapview
+    public static void getPosts(final FirebaseFirestore db, final ArrayList<Post> postArrayList, final GoogleMap mMap, final double latitude, final double longitude) {
+        mMap.clear();
+        postArrayList.clear();
+
+        CollectionReference geoFirestoreRef = db.collection(POSTS_COLLECTION);
+
+        Circle mapRadius;
+
+        GeoFirestore geoFirestore = new GeoFirestore(geoFirestoreRef);
+        GeoQuery geoQuery = geoFirestore.queryAtLocation(new GeoPoint(latitude, longitude), RADIUS);
+        geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
+            @Override
+            public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+                Post currentPost = new Post(documentSnapshot.getData());
+                LatLng postLocation = new LatLng(currentPost.getLatitude(),currentPost.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
+                // TODO: add onMarkerClick() event to create intent to view the post in PostViewFragment'
+                // TODO: https://developers.google.com/maps/documentation/android-sdk/marker#marker_click_events
+            }
+
+            @Override
+            public void onDocumentExited(DocumentSnapshot documentSnapshot) {
+
+            }
+
+            @Override
+            public void onDocumentMoved(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+
+            }
+
+            @Override
+            public void onDocumentChanged(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                // Add circle for user's radius
+                mMap.addCircle(new CircleOptions()
+                    .center(new LatLng(latitude, longitude))
+                    .radius(RADIUS * 1000)
+                    .strokeColor(Color.BLUE)
+                    .fillColor(0x220000FF));
+            }
+
+            @Override
+            public void onGeoQueryError(Exception e) {
+
+            }
+        });
+    }
+
+    // Get current user's posts for listview
     public static void getMyPosts(final View view, final PostArrayAdapter adapter, FirebaseFirestore db) {
         // Remove posts from adapter if any exist
         adapter.clear();
@@ -125,8 +189,32 @@ public class FirestoreHelper {
                             }
 
                             // Hide loading animation and show new posts
-                            view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                            view.getRootView().findViewById(R.id.animation_loading).setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
+                        } else {
+                            Log.w("Firestore error: ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    // Get current user's posts for mapview
+    public static void getMyPosts(final FirebaseFirestore db, final GoogleMap mMap) {
+        // Get posts from database based on current user's id and orders by timestamp
+        db.collection(POSTS_COLLECTION)
+                .whereEqualTo(USERID, FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
+
+                                Post currentPost = new Post(document.getData());
+                                LatLng postLocation = new LatLng(currentPost.getLatitude(), currentPost.getLongitude());
+                                mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
+                            }
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
                         }
@@ -158,7 +246,9 @@ public class FirestoreHelper {
 
                         // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = activity.getSupportFragmentManager();
+                        System.out.println(manager);
                         PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
+
                         FirestoreHelper.getPosts(fragment.getView(), fragment.getAdapter(), db, item.getLatitude(), item.getLongitude()); // gets latest posts
 
                         // Go back to list
@@ -172,5 +262,26 @@ public class FirestoreHelper {
                         Toast.makeText(activity, "Error adding post", Toast.LENGTH_SHORT);
                     }
                 });
+    }
+
+    public static void deleteFromDB(final FragmentActivity activity, final FirebaseFirestore db, final String id) {
+        db.collection(FirestoreHelper.POSTS_COLLECTION)
+                .document(id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore error: ", "Error deleting document", e);
+                        Toast.makeText(activity, "Error deleting post", Toast.LENGTH_SHORT);
+                    }
+                });
+
+        Toast.makeText(activity, "Deleted post", Toast.LENGTH_SHORT);
     }
 }
