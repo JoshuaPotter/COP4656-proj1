@@ -8,11 +8,16 @@
     <string name="google_map_api">AIzaSyC8baJpDFplbZ-0B_EuOgRYCHppdxpTVs8</string>
     <string name="welcome">WELCOME TO GROUPO</string>
 
+    <!-- Titles -->
+    <string name="create_post">Add Post</string>
+    <string name="your_posts">Your Posts</string>
+    <string name="posts">Posts</string>
+    <string name="view_post">View Post</string>
+
     <!-- Menu -->
     <string name="map_view">Map View</string>
-    <string name="create_post">Create Post</string>
-    <string name="view_your_posts">Your Posts</string>
     <string name="sign_out">Sign Out</string>
+    <string name="account">Account</string>
 
     <!-- Create Post -->
     <string name="title">Title</string>

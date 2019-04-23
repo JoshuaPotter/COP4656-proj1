@@ -1,20 +1,15 @@
 package edu.fsu.cs.mobile.project1;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -30,6 +25,32 @@ public class PostsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posts);
 
+        // Setup bottom navigation
+        BottomNavigationView bottomNavigation = findViewById(R.id.posts_bottom_navigation);
+        final AppCompatActivity activity = this;
+        bottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int i = item.getItemId();
+                boolean state = false;
+                if(i == R.id.bottomNav_posts) {
+                    // View Latest Posts
+                    state = toViewPosts();
+                } else if (i == R.id.bottomNav_your_posts){
+                    // View Your Posts
+                    state = toViewYourPosts();
+                } else if (i == R.id.bottomNav_add_post) {
+                    // Add a post
+                    state = toCreatePost();
+                } else if (i == R.id.bottomNav_account) {
+                    // Sign Out
+                    //AuthHelper.signOut(activity, mGoogleSignInClient);
+                    //state = true;
+                }
+                return state;
+            }
+        });
+
         // Get GoogleSignInClient instance
         mGoogleSignInClient = AuthHelper.getClient(PostsActivity.this);
 
@@ -37,50 +58,11 @@ public class PostsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        // Instantiate PostsListFragment
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-
-        // Show PostsListFragment
-        PostsListFragment fragment = new PostsListFragment();
-        transaction.add(R.id.frameLayout_posts, fragment, PostsListFragment.TAG);
-        transaction.commit();
+        // Set base fragment
+        bottomNavigation.setSelectedItemId(R.id.bottomNav_posts);
 
         // Set activity title
-        getSupportActionBar().setTitle(fragment.TITLE);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.posts_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO: If current fragment matches option menu selection, skip function and show Toast
-
-        int i = item.getItemId();
-        boolean state = false;
-        if(i == R.id.menuItem_sign_out) {
-            // Sign Out menu item
-            AuthHelper.signOut(this, mGoogleSignInClient);
-            state = true;
-        } else if (i == R.id.menuItem_create_post) {
-            // Create New Post menu item
-            state = toCreatePost();
-        } else if (i == R.id.menuItem_view_your_posts){
-            // View Your Posts menu item
-            state = toViewYourPosts();
-        } else if (i == R.id.menuItem_mapView) {
-            //Switch to map view
-            state = toMapView();
-        } else if (i == R.id.menuItem_delete_account){
-            AuthHelper.deleteAccount(this, user);
-            state = true;
-        }
-        return state;
+        getSupportActionBar().setTitle(PostsListFragment.TITLE);
     }
 
     private boolean toMapView() {
@@ -120,8 +102,31 @@ public class PostsActivity extends AppCompatActivity {
         return true;
     }
 
+    private boolean toViewPosts() {
+        // Display PostsListFragment
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        // Create new fragment
+        PostsListFragment fragment = new PostsListFragment();
+
+        // Get current fragment
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+
+        // Hide current fragment and show PostsListFragment
+        if(currentFragment != null) {
+            transaction.addToBackStack(currentFragment.getTag());
+            transaction.replace(R.id.frameLayout_posts, fragment);
+        } else {
+            transaction.add(R.id.frameLayout_posts, fragment);
+        }
+        transaction.commit();
+
+        return true;
+    }
+
     private boolean toViewYourPosts() {
-        // Display PostViewFragment
+        // Display PostsListFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -136,7 +141,7 @@ public class PostsActivity extends AppCompatActivity {
         // Get current fragment
         Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
 
-        // Hide current fragment and show PostCreateFragment
+        // Hide current fragment and show PostsListFragment
         transaction.addToBackStack(currentFragment.getTag());
         transaction.replace(R.id.frameLayout_posts, fragment);
         transaction.commit();
