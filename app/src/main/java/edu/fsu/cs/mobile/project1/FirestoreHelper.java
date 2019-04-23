@@ -39,6 +39,7 @@ public class FirestoreHelper {
     public static final double RADIUS = 16;
 
     // Field Titles
+    public static final String ID = "ID";
     public static final String TITLE = "Title";
     public static final String MESSAGE = "Message";
     public static final String USERID = "User ID";
@@ -60,6 +61,7 @@ public class FirestoreHelper {
             public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
                 // For each document in our query within the geolocation, add it to the adapter as a post object
                 Map<String, Object> data = documentSnapshot.getData();
+                data.put(FirestoreHelper.ID, documentSnapshot.getId());
                 adapter.add(new Post(data));
                 Log.w("DocumentSnapshot", data.toString());
             }
@@ -170,5 +172,26 @@ public class FirestoreHelper {
                         Toast.makeText(activity, "Error adding post", Toast.LENGTH_SHORT);
                     }
                 });
+    }
+
+    public static void deleteFromDB(final FragmentActivity activity, final FirebaseFirestore db, final String id) {
+        db.collection(FirestoreHelper.POSTS_COLLECTION)
+                .document(id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore error: ", "Error deleting document", e);
+                        Toast.makeText(activity, "Error deleting post", Toast.LENGTH_SHORT);
+                    }
+                });
+
+        Toast.makeText(activity, "Deleted post", Toast.LENGTH_SHORT);
     }
 }
