@@ -177,7 +177,20 @@ public class FirestoreHelper {
     public static void deleteFromDB(final FragmentActivity activity, final FirebaseFirestore db, final String id) {
         db.collection(FirestoreHelper.POSTS_COLLECTION)
                 .document(id)
-                .delete();
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore error: ", "Error deleting document", e);
+                        Toast.makeText(activity, "Error deleting post", Toast.LENGTH_SHORT);
+                    }
+                });
 
         Toast.makeText(activity, "Deleted post", Toast.LENGTH_SHORT);
     }
