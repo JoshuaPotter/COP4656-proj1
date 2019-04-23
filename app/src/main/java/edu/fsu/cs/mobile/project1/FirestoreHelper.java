@@ -87,7 +87,9 @@ public class FirestoreHelper {
                 adapter.sortByTimestamp();
 
                 // Hide loading animation and show new posts
-                view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                if(view != null) {
+                    view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                }
                 adapter.notifyDataSetChanged();
                 Log.w("DocumentSnapshot", "Loaded documents from Firestore");
             }
@@ -124,7 +126,7 @@ public class FirestoreHelper {
                             }
 
                             // Hide loading animation and show new posts
-                            view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                            view.getRootView().findViewById(R.id.animation_loading).setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
@@ -156,7 +158,9 @@ public class FirestoreHelper {
 
                         // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = activity.getSupportFragmentManager();
+                        System.out.println(manager);
                         PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
+
                         FirestoreHelper.getPosts(fragment.getView(), fragment.getAdapter(), db, item.getLatitude(), item.getLongitude()); // gets latest posts
 
                         // Go back to list
