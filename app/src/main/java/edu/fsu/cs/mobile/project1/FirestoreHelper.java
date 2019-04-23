@@ -89,7 +89,9 @@ public class FirestoreHelper {
                 adapter.sortByTimestamp();
 
                 // Hide loading animation and show new posts
-                view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                if(view != null) {
+                    view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                }
                 adapter.notifyDataSetChanged();
                 Log.w("DocumentSnapshot", "Loaded documents from Firestore");
             }
