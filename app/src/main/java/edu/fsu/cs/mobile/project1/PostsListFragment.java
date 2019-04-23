@@ -16,6 +16,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -37,6 +40,12 @@ public class PostsListFragment extends Fragment implements LocationListener {
     private LocationManager manager;
     private double latitude;
     private double longitude;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,8 +102,24 @@ public class PostsListFragment extends Fragment implements LocationListener {
         });
     }
 
-    public PostArrayAdapter getAdapter() {
-        return adapter;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.posts_options_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.posts_list:
+                ((PostsActivity) getActivity()).toViewPosts();
+                break;
+
+            case R.id.posts_map:
+                // ((PostsActivity) getActivity()).toViewPostsMap();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -156,5 +181,9 @@ public class PostsListFragment extends Fragment implements LocationListener {
             // Get latest posts in current location from Firestore
             FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
         }
+    }
+
+    public PostArrayAdapter getAdapter() {
+        return adapter;
     }
 }

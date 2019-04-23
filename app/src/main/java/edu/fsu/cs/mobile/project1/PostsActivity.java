@@ -69,7 +69,7 @@ public class PostsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(PostsListFragment.TITLE);
     }
 
-    private boolean toCreatePost() {
+    public boolean toCreatePost() {
         // Display PostCreateFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -88,7 +88,7 @@ public class PostsActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean toViewPosts() {
+    public boolean toViewPosts() {
         // Display PostsListFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -111,7 +111,7 @@ public class PostsActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean toViewYourPosts() {
+    public boolean toViewYourPosts() {
         // Display PostsListFragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
