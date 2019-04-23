@@ -17,6 +17,7 @@ public class Post implements Parcelable, Comparable<Post> {
     private double latitude;
     private double longitude;
     private String userid;
+    private String postid;
 
     @ServerTimestamp
     private Date timestamp;
@@ -26,6 +27,7 @@ public class Post implements Parcelable, Comparable<Post> {
     }
 
     public Post(Map<String, Object> data) {
+        this.postid = (String) data.get(FirestoreHelper.ID);
         this.title = (String) data.get(FirestoreHelper.TITLE);
         this.message = (String) data.get(FirestoreHelper.MESSAGE);
         this.userid = (String) data.get(FirestoreHelper.USERID);
@@ -45,6 +47,7 @@ public class Post implements Parcelable, Comparable<Post> {
     }
 
     protected Post(Parcel in) {
+        this.postid = in.readString();
         this.title = in.readString();
         this.message = in.readString();
         this.userid = in.readString();
@@ -55,6 +58,7 @@ public class Post implements Parcelable, Comparable<Post> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(postid);
         dest.writeString(title);
         dest.writeString(message);
         dest.writeString(userid);
@@ -132,6 +136,14 @@ public class Post implements Parcelable, Comparable<Post> {
 
     public void setUserid(String userid) {
         this.userid = userid;
+    }
+
+    public String getPostid() {
+        return postid;
+    }
+
+    public void setPostid(String postid) {
+        this.postid = postid;
     }
 
     @Override
