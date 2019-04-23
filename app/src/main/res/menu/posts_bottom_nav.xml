@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottomNav_posts"
+        android:icon="@drawable/baseline_place_24"
+        android:title="@string/posts" />
+    <item
+        android:id="@+id/bottomNav_your_posts"
+        android:icon="@drawable/baseline_person_pin_circle_24"
+        android:title="@string/your_posts" />
+    <item
+        android:id="@+id/bottomNav_add_post"
+        android:icon="@drawable/baseline_control_point_24"
+        android:title="@string/create_post" />
+    <item
+        android:id="@+id/bottomNav_account"
+        android:icon="@drawable/baseline_face_24"
+        android:title="@string/account" />
+</menu>

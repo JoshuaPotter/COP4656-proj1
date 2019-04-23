@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PostCreateFragment extends Fragment implements LocationListener {
     public static final String TAG = PostCreateFragment.class.getCanonicalName();
-    public static final String TITLE = "Create Post";
+    public static String TITLE = "Add Post";
 
     private FirebaseFirestore db;
 
@@ -44,6 +44,8 @@ public class PostCreateFragment extends Fragment implements LocationListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        TITLE = getResources().getString(R.string.create_post);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_post_create, container, false);
     }

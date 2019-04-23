@@ -27,7 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class PostsListFragment extends Fragment implements LocationListener {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
     public static final String SHOW_USERS_POSTS_FLAG = "showUsersPost";
-    public String TITLE;
+    public static String TITLE = "Posts";
 
     private PostArrayAdapter adapter;
     private FirebaseFirestore db;
@@ -43,9 +43,9 @@ public class PostsListFragment extends Fragment implements LocationListener {
         // Get arguments for which posts to show
         bundle = getArguments();
         if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
-            TITLE = "Your Posts";
+            TITLE = getResources().getString(R.string.your_posts);
         } else {
-            TITLE = "Posts";
+            TITLE = getResources().getString(R.string.posts);
         }
 
         // Inflate the layout for this fragment
