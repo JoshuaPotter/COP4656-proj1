@@ -68,8 +68,33 @@ public class PostsActivity extends AppCompatActivity {
         } else if (i == R.id.menuItem_view_your_posts){
             // View Your Posts menu item
             state = toViewYourPosts();
+        } else if (i == R.id.menuItem_mapView) {
+            //Switch to map view
+            state = toMapView();
+        }
+        else if(i==R.id.menuItem_mapView){
+            //Switch to map view
+            state = toMapView();
         }
         return state;
+    }
+
+    private boolean toMapView() {
+        FragmentManager manager=getSupportFragmentManager();
+
+        FragmentTransaction transaction=manager.beginTransaction();
+
+        MapViewFragment mapViewFragment=new MapViewFragment();
+
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+        // Hide current fragment and show MapViewFragment
+
+        transaction.addToBackStack(currentFragment.getTag());
+
+        transaction.replace(R.id.frameLayout_posts,mapViewFragment);
+
+        transaction.commit();
+        return true;
     }
 
     private boolean toCreatePost() {
