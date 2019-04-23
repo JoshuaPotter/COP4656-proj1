@@ -37,7 +37,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
 
     // UI Objects
     private Button submit_button;
-    private Button cancel_button;
     private EditText et_title;
     private EditText et_message;
 
@@ -67,7 +66,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
         et_title = view.findViewById(R.id.editText_title);
         et_message = view.findViewById(R.id.editText_message);
         submit_button = view.findViewById(R.id.button_submit);
-        cancel_button = view.findViewById(R.id.button_cancel);
 
         // On Click Listener for submit
         submit_button.setOnClickListener(new View.OnClickListener() {
@@ -83,15 +81,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
                 else {
                     createPost(title, message);
                 }
-            }
-        });
-
-        // On Click Listener for cancel
-        cancel_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go back to list
-                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
