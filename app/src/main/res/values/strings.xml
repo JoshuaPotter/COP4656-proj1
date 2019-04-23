@@ -15,9 +15,10 @@
     <string name="view_post">View Post</string>
 
     <!-- Menu -->
-    <string name="map_view">Map View</string>
     <string name="sign_out">Sign Out</string>
     <string name="account">Account</string>
+    <string name="list_view">List View</string>
+    <string name="map_view">Map View</string>
 
     <!-- Create Post -->
     <string name="title">Title</string>
@@ -27,5 +28,4 @@
     <string name="enter_a_title">Enter a title</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
-
 </resources>
