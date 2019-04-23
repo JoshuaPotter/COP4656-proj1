@@ -10,7 +10,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
+
 
 // This class provides helper functions for Google Sign In API
 public final class AuthHelper {
@@ -48,4 +53,26 @@ public final class AuthHelper {
                     }
                 });
     }
+
+    public static void deleteAccount(final Activity activity, FirebaseUser user){
+        // TODO: get user ID, get all posts, delete all posts that have user ID
+
+        user.delete()
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+            if(task.isSuccessful()){
+                Intent toSignIn = new Intent(activity, MainActivity.class);
+                activity.startActivity(toSignIn);
+                activity.finish();
+            }
+            }
+        });
+    }
+
+    /*
+    public static void reAuthenticateAccount(FirebaseUser user){
+        AuthCredential credential = GoogleAuthProvider.getCredential(googleIdToken, null);
+    }
+    */
 }
