@@ -67,24 +67,6 @@ public class PostsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(PostsListFragment.TITLE);
     }
 
-    private boolean toMapView() {
-        FragmentManager manager=getSupportFragmentManager();
-
-        FragmentTransaction transaction=manager.beginTransaction();
-
-        MapViewFragment mapViewFragment=new MapViewFragment();
-
-        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
-        // Hide current fragment and show MapViewFragment
-
-        transaction.addToBackStack(currentFragment.getTag());
-
-        transaction.replace(R.id.frameLayout_posts,mapViewFragment);
-
-        transaction.commit();
-        return true;
-    }
-
     public boolean toCreatePost() {
         // Display PostCreateFragment
         FragmentManager manager = getSupportFragmentManager();
@@ -120,7 +102,7 @@ public class PostsActivity extends AppCompatActivity {
             transaction.addToBackStack(currentFragment.getTag());
             transaction.replace(R.id.frameLayout_posts, fragment);
         } else {
-            transaction.add(R.id.frameLayout_posts, fragment);
+            transaction.add(R.id.frameLayout_posts, fragment, PostsListFragment.TAG);
         }
         transaction.commit();
 
@@ -146,6 +128,51 @@ public class PostsActivity extends AppCompatActivity {
         // Hide current fragment and show PostsListFragment
         transaction.addToBackStack(currentFragment.getTag());
         transaction.replace(R.id.frameLayout_posts, fragment);
+        transaction.commit();
+
+        return true;
+    }
+
+    // Show posts in your current location in mapview
+    public boolean toViewPostsMap() {
+        // Display MapViewFragment
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        // Create new fragment
+        MapViewFragment mapViewFragment = new MapViewFragment();
+
+        // Get current fragment
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+
+        // Hide current fragment and show MapViewFragment
+        transaction.addToBackStack(currentFragment.getTag());
+        transaction.replace(R.id.frameLayout_posts,mapViewFragment);
+        transaction.commit();
+
+        return true;
+    }
+
+    // Show your posts in mapview
+    public boolean toViewYourPostsMap() {
+        // Display MapViewFragment
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        // Set arguments
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PostsListFragment.SHOW_USERS_POSTS_FLAG, true);
+
+        // Create new fragment
+        MapViewFragment mapViewFragment = new MapViewFragment();
+        mapViewFragment.setArguments(bundle);
+
+        // Get current fragment
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+
+        // Hide current fragment and show MapViewFragment
+        transaction.addToBackStack(currentFragment.getTag());
+        transaction.replace(R.id.frameLayout_posts,mapViewFragment);
         transaction.commit();
 
         return true;

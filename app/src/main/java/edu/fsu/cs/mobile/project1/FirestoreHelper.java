@@ -188,7 +188,7 @@ public class FirestoreHelper {
                             }
 
                             // Hide loading animation and show new posts
-                            view.getRootView().findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                            view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
@@ -199,6 +199,7 @@ public class FirestoreHelper {
 
     // Get current user's posts for mapview
     public static void getMyPosts(final FirebaseFirestore db, final GoogleMap mMap) {
+        mMap.clear();
         // Get posts from database based on current user's id and orders by timestamp
         db.collection(POSTS_COLLECTION)
                 .whereEqualTo(USERID, FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -244,7 +245,6 @@ public class FirestoreHelper {
 
                         // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = activity.getSupportFragmentManager();
-                        System.out.println(manager);
                         PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
 
                         FirestoreHelper.getPosts(fragment.getView(), fragment.getAdapter(), db, item.getLatitude(), item.getLongitude()); // gets latest posts
