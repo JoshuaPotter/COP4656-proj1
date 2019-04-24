@@ -106,7 +106,6 @@ public class FirestoreHelper {
 
             @Override
             public void onGeoQueryError(Exception e) {
-                view.findViewById(R.id.animation_loading);
                 Log.w("DocumentSnapshot", "Error loading documents from Firestore " + e.getLocalizedMessage());
             }
         });
@@ -126,7 +125,9 @@ public class FirestoreHelper {
         geoQuery.addGeoQueryDataEventListener(new GeoQueryDataEventListener() {
             @Override
             public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
-                Post currentPost = new Post(documentSnapshot.getData());
+                Map<String, Object> data = documentSnapshot.getData();
+                data.put(FirestoreHelper.ID, documentSnapshot.getId());
+                Post currentPost = new Post(data);
                 LatLng postLocation = new LatLng(currentPost.getLatitude(),currentPost.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
                 // TODO: add onMarkerClick() event to create intent to view the post in PostViewFragment'
@@ -183,13 +184,16 @@ public class FirestoreHelper {
                                 // Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
 
                                 // Add post to adapter
-                                Map<String, Object> data = new HashMap<>(document.getData());
+                                Map<String, Object> data = document.getData();
+                                data.put(FirestoreHelper.ID, document.getId());
                                 Post item = new Post(data);
                                 adapter.add(item);
                             }
 
                             // Hide loading animation and show new posts
-                            view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                            if(view != null) {
+                                view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                            }
                             adapter.notifyDataSetChanged();
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
@@ -212,7 +216,9 @@ public class FirestoreHelper {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 // Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
 
-                                Post currentPost = new Post(document.getData());
+                                Map<String, Object> data = document.getData();
+                                data.put(FirestoreHelper.ID, document.getId());
+                                Post currentPost = new Post(data);
                                 LatLng postLocation = new LatLng(currentPost.getLatitude(), currentPost.getLongitude());
                                 mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
                             }
@@ -265,7 +271,7 @@ public class FirestoreHelper {
                 });
     }
 
-    public static void deleteFromDB(final FragmentActivity activity, final FirebaseFirestore db, final String id) {
+    public static void deleteFromDB(final FirebaseFirestore db, final String id) {
         db.collection(FirestoreHelper.POSTS_COLLECTION)
                 .document(id)
                 .delete()
@@ -279,10 +285,7 @@ public class FirestoreHelper {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("Firestore error: ", "Error deleting document", e);
-                        Toast.makeText(activity, "Error deleting post", Toast.LENGTH_SHORT);
                     }
                 });
-
-        Toast.makeText(activity, "Deleted post", Toast.LENGTH_SHORT);
     }
 }

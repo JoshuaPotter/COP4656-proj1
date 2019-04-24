@@ -28,5 +28,6 @@
     <string name="enter_a_title">Enter a title</string>
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
+    <string name="delete_account">Delete Account</string>
 
 </resources>
