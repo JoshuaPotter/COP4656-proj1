@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PostCreateFragment extends Fragment implements LocationListener {
     public static final String TAG = PostCreateFragment.class.getCanonicalName();
-    public static final String TITLE = "Create Post";
+    public static String TITLE = "Add Post";
 
     private FirebaseFirestore db;
 
@@ -37,13 +37,14 @@ public class PostCreateFragment extends Fragment implements LocationListener {
 
     // UI Objects
     private Button submit_button;
-    private Button cancel_button;
     private EditText et_title;
     private EditText et_message;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        TITLE = getResources().getString(R.string.create_post);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_post_create, container, false);
     }
@@ -65,7 +66,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
         et_title = view.findViewById(R.id.editText_title);
         et_message = view.findViewById(R.id.editText_message);
         submit_button = view.findViewById(R.id.button_submit);
-        cancel_button = view.findViewById(R.id.button_cancel);
 
         // On Click Listener for submit
         submit_button.setOnClickListener(new View.OnClickListener() {
@@ -81,15 +81,6 @@ public class PostCreateFragment extends Fragment implements LocationListener {
                 else {
                     createPost(title, message);
                 }
-            }
-        });
-
-        // On Click Listener for cancel
-        cancel_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go back to list
-                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }

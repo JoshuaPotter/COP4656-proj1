@@ -32,6 +32,8 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        TITLE = getResources().getString(R.string.view_post);
+
         View view = inflater.inflate(R.layout.fragment_post_view, container, false);
 
         // Set activity title
@@ -70,7 +72,11 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
         //Add marker at post location, set text to post title
         map.addMarker(new MarkerOptions().position(postLatLng).title(item.getTitle()));
         //Draw circle around marker w/ radius of 100 ft
-        map.addCircle(new CircleOptions().center(postLatLng).radius(30.48).fillColor(Color.parseColor("#4A89F3")).strokeColor(Color.BLUE));
+        map.addCircle(new CircleOptions()
+                .center(postLatLng)
+                .radius(30.48)
+                .strokeColor(Color.BLUE)
+                .fillColor(0x220000FF));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(postLatLng, 16.0f));
     }
 }

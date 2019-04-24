@@ -4,17 +4,30 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 // This class provides helper functions for Google Sign In API
@@ -54,20 +67,57 @@ public final class AuthHelper {
                 });
     }
 
-    public static void deleteAccount(final Activity activity, FirebaseUser user){
-        // TODO: get user ID, get all posts, delete all posts that have user ID
+    public static void deleteAccount(final Activity activity, final FirebaseUser user){
+        final String userId = user.getUid();
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        user.delete()
-            .addOnCompleteListener(new OnCompleteListener<Void>() {
-        @Override
-        public void onComplete(@NonNull Task<Void> task) {
-            if(task.isSuccessful()){
-                Intent toSignIn = new Intent(activity, MainActivity.class);
-                activity.startActivity(toSignIn);
-                activity.finish();
-            }
-            }
-        });
+        // Get all user's posts
+        db.collection(FirestoreHelper.POSTS_COLLECTION)
+            .whereEqualTo(FirestoreHelper.USERID, userId)
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        ArrayList<Post> userPosts = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                             Log.d("DocumentSnapshot", document.getId() + " => " + document.getData());
+
+                            // Add post to array list
+                            Map<String, Object> data = new HashMap<>(document.getData());
+                            data.put(FirestoreHelper.ID, document.getId());
+                            userPosts.add(new Post(data));
+                        }
+
+                        // Delete all user's posts
+                        for(Post post : userPosts) {
+                            FirestoreHelper.deleteFromDB(db, post.getPostid());
+                        }
+
+                        // Delete user
+                        user.delete()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Intent toSignIn = new Intent(activity, MainActivity.class);
+                                        activity.startActivity(toSignIn);
+                                        activity.finish();
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                    } else {
+                        Log.w("Firestore error: ", "Error getting documents.", task.getException());
+                    }
+                }
+            });
     }
 
     /*

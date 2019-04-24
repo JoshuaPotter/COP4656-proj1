@@ -16,6 +16,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -27,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class PostsListFragment extends Fragment implements LocationListener {
     public static final String TAG = PostsListFragment.class.getCanonicalName();
     public static final String SHOW_USERS_POSTS_FLAG = "showUsersPost";
-    public String TITLE;
+    public static String TITLE = "Posts";
 
     private PostArrayAdapter adapter;
     private FirebaseFirestore db;
@@ -39,17 +42,25 @@ public class PostsListFragment extends Fragment implements LocationListener {
     private double longitude;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_posts_list, container, false);
+
         // Get arguments for which posts to show
         bundle = getArguments();
         if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
-            TITLE = "Your Posts";
+            TITLE = getResources().getString(R.string.your_posts);
         } else {
-            TITLE = "Posts";
+            TITLE = getResources().getString(R.string.posts);
         }
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posts_list, container, false);
+        return view;
     }
 
     @Override
@@ -69,6 +80,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         ListView list = view.findViewById(R.id.listView_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
+        // Get new posts
         getPosts(view);
 
         // Assign adapter to the ListView
@@ -93,8 +105,36 @@ public class PostsListFragment extends Fragment implements LocationListener {
         });
     }
 
-    public PostArrayAdapter getAdapter() {
-        return adapter;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.posts_options_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.posts_list).setEnabled(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if(i == R.id.posts_list) {
+            // Check if browsing current posts or user's posts, and set correct method for options
+            if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
+                ((PostsActivity) getActivity()).toViewYourPosts();
+            } else {
+                ((PostsActivity) getActivity()).toViewPosts();
+            }
+        } else if (i == R.id.posts_map) {
+            if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
+                ((PostsActivity) getActivity()).toViewYourPostsMap();
+            } else {
+                ((PostsActivity) getActivity()).toViewPostsMap();
+            }
+        }
+        return true;
     }
 
     @Override
@@ -156,5 +196,9 @@ public class PostsListFragment extends Fragment implements LocationListener {
             // Get latest posts in current location from Firestore
             FirestoreHelper.getPosts(view, adapter, db, latitude, longitude);
         }
+    }
+
+    public PostArrayAdapter getAdapter() {
+        return adapter;
     }
 }
