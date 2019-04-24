@@ -88,7 +88,6 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getContext(), "POOP", Toast.LENGTH_LONG);
                 return false;
             }
         });
