@@ -1,4 +1,4 @@
-# COP4656 Project 1 & 2
+# Groupo (COP4656 Project 1 & 2)
 Recreation of Yik Yak app for COP4656
 
 ## About the App
