@@ -112,21 +112,17 @@ public class PostsListFragment extends Fragment implements LocationListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if(i == R.id.posts_list) {
-            // Check current fragment, display relevant view
+            // Check if browsing current posts or user's posts, and set correct method for options
             if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
                 ((PostsActivity) getActivity()).toViewYourPosts();
-                Toast.makeText(getContext(), "Showing your posts in list", Toast.LENGTH_SHORT).show();
             } else {
                 ((PostsActivity) getActivity()).toViewPosts();
-                Toast.makeText(getContext(), "Showing posts in list", Toast.LENGTH_SHORT).show();
             }
         } else if (i == R.id.posts_map) {
             if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
                 ((PostsActivity) getActivity()).toViewYourPostsMap();
-                Toast.makeText(getContext(), "Showing your posts in map", Toast.LENGTH_SHORT).show();
             } else {
                 ((PostsActivity) getActivity()).toViewPostsMap();
-                Toast.makeText(getContext(), "Showing posts in map", Toast.LENGTH_SHORT).show();
             }
         }
         return true;
