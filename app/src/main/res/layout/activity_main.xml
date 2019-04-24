@@ -6,33 +6,47 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:padding="20dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="240dp"
-        android:layout_height="90dp"
-        android:textSize="35dp"
-        android:textAlignment="center"
-        android:text="@string/welcome"/>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="80dp"
-        app:srcCompat="@drawable/ic_bubble_chart_black_24dp"
-        android:layout_marginBottom="75dp"/>
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="75dp"
+            app:srcCompat="@drawable/ic_bubble_chart_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:text="@string/welcome"
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/google_sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="40dp"/>
-
-    <TextView
-        android:layout_width="240dp"
-        android:layout_height="120dp"
-        android:text="TO DO: Add trending event here"
-        android:textAlignment="center" />
+        android:layout_gravity="center" />
 
 </LinearLayout>
