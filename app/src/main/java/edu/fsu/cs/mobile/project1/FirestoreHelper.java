@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -128,9 +129,10 @@ public class FirestoreHelper {
             public void onDocumentEntered(DocumentSnapshot documentSnapshot, GeoPoint geoPoint) {
                 Post currentPost = new Post(documentSnapshot.getData());
                 LatLng postLocation = new LatLng(currentPost.getLatitude(),currentPost.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
-                // TODO: add onMarkerClick() event to create intent to view the post in PostViewFragment'
-                // TODO: https://developers.google.com/maps/documentation/android-sdk/marker#marker_click_events
+                //create new marker object then bind its corresponding post for onclick events
+                Marker temp= mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
+                temp.setTag(currentPost);
+
             }
 
             @Override
