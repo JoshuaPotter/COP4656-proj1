@@ -9,9 +9,6 @@ Recreation of Yik Yak app for COP4656
  * [GeoFirestore Android library](https://github.com/imperiumlabs/GeoFirestore-Android/) for geohashing with Firestore
  * [Pull to Refresh interaction](https://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide#swiperefreshlayout-with-listview) with ListView
 
-### User Flow
-[Click here for the intended design of the app](https://app.flowmapp.com/share/d8a6151a00e03209277bc930262ab10a), this will help organize how we build the application
-
 ## Setup
 ### Google Sign In
 Add your SHA certificate to Firebase by following the instructions below. This is required for Google Sign-in to work on any APKs (Android app executable file) you build on your machine.
