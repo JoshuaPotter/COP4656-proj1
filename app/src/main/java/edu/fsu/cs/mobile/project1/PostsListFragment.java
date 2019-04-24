@@ -112,7 +112,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo info)
     {
-        menu.add(0, v.getId(), 0, "Delete");
+        menu.add(0, v.getId(), 0, getResources().getString(R.string.delete_post));
     }
 
     public boolean onContextItemSelected(MenuItem item)
@@ -120,7 +120,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         Post post = adapter.getItem(info.position);
 
-        if(item.getTitle() == "Delete") {
+        if(item.getTitle() == getResources().getString(R.string.delete_post)) {
             FirestoreHelper.deleteFromDB(db, post.getPostid());
             adapter.remove(post);
         }
