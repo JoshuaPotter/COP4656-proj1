@@ -45,8 +45,8 @@ public class PostsActivity extends AppCompatActivity {
                     // Add a post
                     state = toCreatePost();
                 } else if (i == R.id.bottomNav_account) {
-                    // Sign Out
-                    //AuthHelper.signOut(activity, mGoogleSignInClient);
+                    // View account
+                    state = toAccount();
                     //state = true;
                 }
                 return state;
@@ -173,6 +173,25 @@ public class PostsActivity extends AppCompatActivity {
         // Hide current fragment and show MapViewFragment
         transaction.addToBackStack(currentFragment.getTag());
         transaction.replace(R.id.frameLayout_posts,mapViewFragment);
+        transaction.commit();
+
+        return true;
+    }
+
+    // Show account management page
+    public boolean toAccount() {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        // Create new fragment
+        AccountFragment accountFragment = new AccountFragment();
+
+        // Get current fragment
+        Fragment currentFragment = manager.findFragmentById(R.id.frameLayout_posts);
+
+        // Hide current fragment and show MapViewFragment
+        transaction.addToBackStack(currentFragment.getTag());
+        transaction.replace(R.id.frameLayout_posts, accountFragment);
         transaction.commit();
 
         return true;

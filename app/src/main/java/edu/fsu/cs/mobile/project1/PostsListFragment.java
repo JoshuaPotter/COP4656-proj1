@@ -49,6 +49,8 @@ public class PostsListFragment extends Fragment implements LocationListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_posts_list, container, false);
+
         // Get arguments for which posts to show
         bundle = getArguments();
         if(bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG)) {
@@ -58,7 +60,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         }
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posts_list, container, false);
+        return view;
     }
 
     @Override
@@ -78,6 +80,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         ListView list = view.findViewById(R.id.listView_posts);
         adapter = new PostArrayAdapter(getActivity(), R.layout.row_post);
 
+        // Get new posts
         getPosts(view);
 
         // Assign adapter to the ListView
@@ -106,6 +109,12 @@ public class PostsListFragment extends Fragment implements LocationListener {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.posts_options_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.posts_list).setEnabled(false);
     }
 
     @Override

@@ -6,6 +6,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -39,6 +42,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -56,21 +60,41 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    private void getLocation() {
-        try {
-            LocationManager locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            latitude=location.getLatitude();
-            longitude=location.getLongitude();
-        }
-        catch (SecurityException e){
-            Toast.makeText(getContext(),"Unable to determine GPS location",Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
         getLocation();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.posts_options_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.posts_map).setEnabled(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if(i == R.id.posts_list) {
+            // Check if browsing current posts or user's posts, and set correct method for options
+            if(bundle != null && bundle.containsKey(PostsListFragment.SHOW_USERS_POSTS_FLAG)) {
+                ((PostsActivity) getActivity()).toViewYourPosts();
+            } else {
+                ((PostsActivity) getActivity()).toViewPosts();
+            }
+        } else if (i == R.id.posts_map) {
+            if(bundle != null && bundle.containsKey(PostsListFragment.SHOW_USERS_POSTS_FLAG)) {
+                ((PostsActivity) getActivity()).toViewYourPostsMap();
+            } else {
+                ((PostsActivity) getActivity()).toViewPostsMap();
+            }
+        }
+        return true;
     }
 
     @Override
@@ -94,6 +118,18 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         // Set user's location
         LatLng user = new LatLng(latitude,longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,12));
+    }
+
+    private void getLocation() {
+        try {
+            LocationManager locationManager=(LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Location location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            latitude=location.getLatitude();
+            longitude=location.getLongitude();
+        }
+        catch (SecurityException e){
+            Toast.makeText(getContext(),"Unable to determine GPS location",Toast.LENGTH_LONG).show();
+        }
     }
 
     private void getPosts() {
