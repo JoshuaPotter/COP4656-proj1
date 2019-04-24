@@ -20,6 +20,9 @@
     <string name="list_view">List View</string>
     <string name="map_view">Map View</string>
 
+    <!-- ContextMenu -->
+    <string name="delete_post">Delete</string>
+
     <!-- Create Post -->
     <string name="title">Title</string>
     <string name="timestamp">Timestamp</string>
