@@ -3,6 +3,7 @@ package edu.fsu.cs.mobile.project1;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -188,7 +189,7 @@ public class FirestoreHelper {
                             }
 
                             // Hide loading animation and show new posts
-                            view.getRootView().findViewById(R.id.animation_loading).setVisibility(View.GONE);
+                            view.findViewById(R.id.animation_loading).setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
                         } else {
                             Log.w("Firestore error: ", "Error getting documents.", task.getException());
@@ -199,6 +200,7 @@ public class FirestoreHelper {
 
     // Get current user's posts for mapview
     public static void getMyPosts(final FirebaseFirestore db, final GoogleMap mMap) {
+        mMap.clear();
         // Get posts from database based on current user's id and orders by timestamp
         db.collection(POSTS_COLLECTION)
                 .whereEqualTo(USERID, FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -244,13 +246,14 @@ public class FirestoreHelper {
 
                         // Get PostsListFragment from fragment manager and update it's posts
                         FragmentManager manager = activity.getSupportFragmentManager();
-                        System.out.println(manager);
                         PostsListFragment fragment = (PostsListFragment) manager.findFragmentByTag(PostsListFragment.TAG);
 
                         FirestoreHelper.getPosts(fragment.getView(), fragment.getAdapter(), db, item.getLatitude(), item.getLongitude()); // gets latest posts
 
                         // Go back to list
                         activity.getSupportFragmentManager().popBackStack();
+                        BottomNavigationView bottomNavigation = activity.findViewById(R.id.posts_bottom_navigation);
+                        bottomNavigation.setSelectedItemId(R.id.bottomNav_posts);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

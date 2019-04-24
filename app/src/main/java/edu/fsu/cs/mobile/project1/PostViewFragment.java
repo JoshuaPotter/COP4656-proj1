@@ -32,6 +32,8 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        TITLE = getResources().getString(R.string.view_post);
+
         View view = inflater.inflate(R.layout.fragment_post_view, container, false);
 
         // Set activity title
