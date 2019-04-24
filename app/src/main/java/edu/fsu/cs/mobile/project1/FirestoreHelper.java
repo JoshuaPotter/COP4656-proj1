@@ -52,7 +52,7 @@ public class FirestoreHelper {
     public static final String USERID = "User ID";
     public static final String TIMESTAMP = "Timestamp";
     public static final String LOCATION = "l";
-    //public static final int UPVOTES = 0;
+    public static final String UPVOTES = "Upvotes";
 
     // Get latest posts from current location in a list arrayadapter
     public static void getPosts(final View view, final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
@@ -228,7 +228,7 @@ public class FirestoreHelper {
         data.put(TIMESTAMP, FieldValue.serverTimestamp());
         data.put(TITLE, item.getTitle());
         data.put(MESSAGE, item.getMessage());
-        //data.put(Integer.toString(UPVOTES), item.getUpvotes());
+        data.put(UPVOTES, item.getUpvotes());
         data.put(USERID, item.getUserid());
 
         // Add map object to Firestore collection
