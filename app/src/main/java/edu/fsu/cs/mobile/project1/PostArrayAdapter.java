@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,6 +85,14 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
             }
         });
 
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getContext(), "POOP", Toast.LENGTH_LONG);
+                return false;
+            }
+        });
+
         return convertView;
     }
 
@@ -133,6 +142,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         int idx = getPosition(item);
         if(idx >= 0 && idx < postList.size()) {
             postList.remove(idx);
+            notifyDataSetChanged();
         }
     }
 
