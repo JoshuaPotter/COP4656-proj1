@@ -120,4 +120,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Signed out state
         }
     }
+
+    public void snackbarMessage(View v) {
+        Toast.makeText(this, "You must log in to see details.",
+                Toast.LENGTH_LONG).show();
+    }
+
 }

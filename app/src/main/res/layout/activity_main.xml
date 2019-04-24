@@ -36,9 +36,9 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="320dp"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="30dp"
         android:text="@string/welcome"
         android:textAlignment="center"
         android:textSize="18sp" />
@@ -47,6 +47,27 @@
         android:id="@+id/google_sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginBottom="125dp" />
+
+    <TextView
+        android:id="@+id/loginTitleSample"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+        android:text="Bikini Party"
+        android:textAlignment="center"
+        android:textSize="25dp"
+        android:onClick="snackbarMessage" />
+
+    <TextView
+        android:id="@+id/loginMessageSample"
+        android:layout_width="250dp"
+        android:layout_height="130dp"
+        android:text="There is a pool party at Dwayne Wade's house..."
+        android:textAlignment="center"
+        android:textSize="18dp"
+        android:onClick="snackbarMessage" />
+
+
 
 </LinearLayout>
