@@ -3,6 +3,7 @@ package edu.fsu.cs.mobile.project1;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -251,6 +252,8 @@ public class FirestoreHelper {
 
                         // Go back to list
                         activity.getSupportFragmentManager().popBackStack();
+                        BottomNavigationView bottomNavigation = activity.findViewById(R.id.posts_bottom_navigation);
+                        bottomNavigation.setSelectedItemId(R.id.bottomNav_posts);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
