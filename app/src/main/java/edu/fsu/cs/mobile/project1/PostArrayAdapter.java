@@ -14,12 +14,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class PostArrayAdapter extends ArrayAdapter<Post> {
     private Context mContext;
     private ArrayList<Post> postList;
+    private FirebaseFirestore db;
 
     public PostArrayAdapter(@NonNull Context context, int resource) {
         super(context, resource);
@@ -37,7 +40,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final Post item = getItem(position); // Post at this position
 
         // Populate ListView with each post entry
@@ -90,10 +93,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int upvote_plus_one;
-                upvote_plus_one = Integer.parseInt(item.getUpvotes()) + 1;
-                String new_upvote = Integer.toString(upvote_plus_one);
-                item.setUpvotes(new_upvote);
+                upvotePost(position);
             }
         });
 
@@ -159,5 +159,13 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
     public void sortByTimestamp() {
         // Sorts using Comparable in Posts class by timestamp date
         Collections.sort(postList, Collections.reverseOrder());
+    }
+
+    public void upvotePost(int position){
+        db = FirebaseFirestore.getInstance();
+        final Post item = getItem(position);
+        int upvoteCountPlusOne = Integer.parseInt(item.getUpvotes()) + 1;
+        String new_upvote = Integer.toString(upvoteCountPlusOne);
+        FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
     }
 }

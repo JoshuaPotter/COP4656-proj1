@@ -290,4 +290,22 @@ public class FirestoreHelper {
                     }
                 });
     }
+
+    public static void updateUpvoteDB(final FirebaseFirestore db, final String id, final String upvotes) {
+        db.collection(FirestoreHelper.POSTS_COLLECTION)
+                .document(id)
+                .update(UPVOTES, upvotes) //here
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore error: ", "Error deleting document", e);
+                    }
+                });
+    }
 }
