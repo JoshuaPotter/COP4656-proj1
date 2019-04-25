@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import java.util.TimerTask;
 import android.view.View;
 import android.widget.Toast;
 import android.widget.TextView;
+import android.os.*;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,6 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = "MainActivity";
     private static final int SIGN_IN = 9001;
+    public static int i = 0;
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
@@ -33,25 +36,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        final TextView title = findViewById(R.id.loginTitleSample);
-//        final String[] arrayTitle = getResources().getStringArray(R.array.titleItemsArray);
-//        final TextView message = findViewById(R.id.loginMessageSample);
-//        final String[] arrayMessage = getResources().getStringArray(R.array.messageItemsArray);
-//
-//
-//        title.post(new Runnable() {
-//            int i = 0;
-//            @Override
-//            public void run() {
-//                title.setText(arrayTitle[i]);
-//                message.setText(arrayMessage[i]);
-//                i++;
-//                if (i ==5)
-//                    i = 0;
-//                title.postDelayed(this, 5000);
-//                message.postDelayed(this, 5000);
-//            }
-//        });
+        final TextView title = findViewById(R.id.loginTitleSample);
+        final TextView message = findViewById(R.id.loginMessageSample);
+
+        title.setText("Pool @ Duval");
+        message.setText("I saw someone jumping in with a 20k diamond bracelet...");
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
