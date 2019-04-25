@@ -5,6 +5,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,13 +22,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-public class MapViewFragment extends Fragment implements OnMapReadyCallback {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     public static final String TAG = MapViewFragment.class.getCanonicalName();
 
     private Bundle bundle;
@@ -118,6 +124,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         // Set user's location
         LatLng user = new LatLng(latitude,longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,12));
+        mMap.setOnInfoWindowClickListener(this);
     }
 
     private void getLocation() {
@@ -141,6 +148,29 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
             // Get latest posts in current location from Firestore
             // Populate map with posts
             FirestoreHelper.getPosts(db, postArrayList, mMap, latitude, longitude);
+        }
+    }
+
+    //we use onInfoWindowClick because onMarkerClick ran everytime you clicked the red marker
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Post markerPost=(Post) marker.getTag();
+        //if post successfully retrieved from marker, open post in PVF
+        //code is identical to the ArrayAdapter onclicklistener
+        if (markerPost!=null){
+            FragmentManager manager = ((FragmentActivity) getContext()).getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+
+            // Create new fragment and set arguments
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("post", markerPost);
+            PostViewFragment fragment = new PostViewFragment();
+            fragment.setArguments(bundle);
+
+            // Hide PostsListFragment and show PostViewFragment
+            transaction.addToBackStack(MapViewFragment.TAG);
+            transaction.replace(R.id.frameLayout_posts, fragment);
+            transaction.commit();
         }
     }
 }

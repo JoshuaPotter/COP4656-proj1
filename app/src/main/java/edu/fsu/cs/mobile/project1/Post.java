@@ -18,6 +18,7 @@ public class Post implements Parcelable, Comparable<Post> {
     private double longitude;
     private String userid;
     private String postid;
+    private String upvotes;
 
     @ServerTimestamp
     private Date timestamp;
@@ -34,16 +35,18 @@ public class Post implements Parcelable, Comparable<Post> {
         this.timestamp = ((Timestamp) data.get(FirestoreHelper.TIMESTAMP)).toDate();
         this.latitude = ((ArrayList<Double>) data.get(FirestoreHelper.LOCATION)).get(0);
         this.longitude = ((ArrayList<Double>) data.get(FirestoreHelper.LOCATION)).get(1);
+        this.upvotes = (String) data.get(FirestoreHelper.UPVOTES);
     }
 
     public Post(String title, String message, double latitude, double longitude,
-                Date timestamp, String userid) {
+                Date timestamp, String userid, String upvotes) {
         this.title = title;
         this.message = message;
         this.userid = userid;
         this.latitude = latitude;
         this.longitude = longitude;
         this.timestamp = timestamp;
+        this.upvotes = upvotes;
     }
 
     protected Post(Parcel in) {
@@ -54,6 +57,7 @@ public class Post implements Parcelable, Comparable<Post> {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.timestamp = (Date) in.readSerializable();
+        this.upvotes = in.readString();
     }
 
     @Override
@@ -65,6 +69,7 @@ public class Post implements Parcelable, Comparable<Post> {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeSerializable(timestamp);
+        dest.writeString(upvotes);
     }
 
     @Override
@@ -123,6 +128,10 @@ public class Post implements Parcelable, Comparable<Post> {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getUpvotes() { return upvotes; }
+
+    public void setUpvotes(String upvotes) { this.upvotes = upvotes; }
 
     public String getFormattedTimestamp() {
         // Returns timestamp in AM/PM format

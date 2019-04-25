@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,6 +54,7 @@ public class FirestoreHelper {
     public static final String USERID = "User ID";
     public static final String TIMESTAMP = "Timestamp";
     public static final String LOCATION = "l";
+    public static final String UPVOTES = "Upvotes";
 
     // Get latest posts from current location in a list arrayadapter
     public static void getPosts(final View view, final PostArrayAdapter adapter, FirebaseFirestore db, double latitude, double longitude) {
@@ -129,9 +131,10 @@ public class FirestoreHelper {
                 data.put(FirestoreHelper.ID, documentSnapshot.getId());
                 Post currentPost = new Post(data);
                 LatLng postLocation = new LatLng(currentPost.getLatitude(),currentPost.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
-                // TODO: add onMarkerClick() event to create intent to view the post in PostViewFragment'
-                // TODO: https://developers.google.com/maps/documentation/android-sdk/marker#marker_click_events
+                //create new marker object then bind its corresponding post for onclick events
+                Marker temp= mMap.addMarker(new MarkerOptions().position(postLocation).title(currentPost.getTitle()));
+                temp.setTag(currentPost);
+
             }
 
             @Override
@@ -235,6 +238,7 @@ public class FirestoreHelper {
         data.put(TIMESTAMP, FieldValue.serverTimestamp());
         data.put(TITLE, item.getTitle());
         data.put(MESSAGE, item.getMessage());
+        data.put(UPVOTES, item.getUpvotes());
         data.put(USERID, item.getUserid());
 
         // Add map object to Firestore collection

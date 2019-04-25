@@ -15,12 +15,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -86,6 +88,9 @@ public class PostsListFragment extends Fragment implements LocationListener {
         // Assign adapter to the ListView
         list.setAdapter(adapter);
 
+        if (bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG))
+            registerForContextMenu(list);
+
         // Add Pull to Refresh interaction with ListView
         //  Source: https://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide#swiperefreshlayout-with-listview
         final SwipeRefreshLayout swipeContainer = view.findViewById(R.id.swipe);
@@ -105,10 +110,29 @@ public class PostsListFragment extends Fragment implements LocationListener {
         });
     }
 
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo info)
+    {
+        menu.add(0, v.getId(), 0, getResources().getString(R.string.delete_post));
+    }
+
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Post post = adapter.getItem(info.position);
+
+        if(item.getTitle() == getResources().getString(R.string.delete_post)) {
+            FirestoreHelper.deleteFromDB(db, post.getPostid());
+            adapter.remove(post);
+        }
+
+        return true;
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.posts_options_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @Override
