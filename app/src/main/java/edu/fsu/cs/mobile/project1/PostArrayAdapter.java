@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -85,7 +87,8 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
             }
         });
 
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+        if(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(getItem(position).getUserid()))
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 return false;
