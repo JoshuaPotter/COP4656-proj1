@@ -30,4 +30,21 @@
     <string name="submit">Submit</string>
     <string name="delete_account">Delete Account</string>
 
+    <string-array name="titleItemsArray">
+        <item>Bikini Pool Party</item>
+        <item>The Office Trivia</item>
+        <item>Cars and Coffee</item>
+        <item>Underground Racing</item>
+        <item>Happy Hour at Madso</item>
+        <item>The Bachelor Watch Party</item>
+    </string-array>
+    <string-array name="messageItemsArray">
+        <item>Dwayne Wayde is having a pool party and Selena Gomez will...</item>
+        <item>Everyone thinks they know the most about the Office so its...</item>
+        <item>If you think have a nice car then lets put it to the test...</item>
+        <item>Cannot tell you what this is really about so just come and see...</item>
+        <item>Dueling pianos are back but this time there is something extra...</item>
+        <item>I am so over all this bachelor drama so lets see who can make...</item>
+    </string-array>
+
 </resources>

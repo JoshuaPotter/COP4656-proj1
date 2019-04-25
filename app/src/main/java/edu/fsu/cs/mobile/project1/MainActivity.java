@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,6 +32,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final TextView title = findViewById(R.id.loginTitleSample);
+        final String[] arrayTitle = getResources().getStringArray(R.array.titleItemsArray);
+        final TextView message = findViewById(R.id.loginMessageSample);
+        final String[] arrayMessage = getResources().getStringArray(R.array.messageItemsArray);
+
+
+        title.post(new Runnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                title.setText(arrayTitle[i]);
+                message.setText(arrayMessage[i]);
+                i++;
+                if (i ==5)
+                    i = 0;
+                title.postDelayed(this, 3000);
+                message.postDelayed(this, 3000);
+            }
+        });
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
