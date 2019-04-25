@@ -88,8 +88,7 @@ public class PostsListFragment extends Fragment implements LocationListener {
         // Assign adapter to the ListView
         list.setAdapter(adapter);
 
-        if (bundle != null && bundle.containsKey(SHOW_USERS_POSTS_FLAG))
-            registerForContextMenu(list);
+        registerForContextMenu(list);
 
         // Add Pull to Refresh interaction with ListView
         //  Source: https://guides.codepath.com/android/Implementing-Pull-to-Refresh-Guide#swiperefreshlayout-with-listview
