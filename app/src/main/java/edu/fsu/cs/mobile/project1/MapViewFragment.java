@@ -123,7 +123,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
 
         // Set user's location
         LatLng user = new LatLng(latitude,longitude);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(user,14));
         mMap.setOnInfoWindowClickListener(this);
     }
 

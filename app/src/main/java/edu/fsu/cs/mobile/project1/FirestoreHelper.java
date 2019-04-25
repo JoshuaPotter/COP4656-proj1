@@ -44,8 +44,8 @@ public class FirestoreHelper {
     // Collection Title
     public static final String POSTS_COLLECTION = "posts";
 
-    // 8km (~5 miles) radius
-    public static final double RADIUS = 8;
+    // 2km (~1 miles) radius
+    public static final double RADIUS = 2;
 
     // Field Titles
     public static final String ID = "ID";

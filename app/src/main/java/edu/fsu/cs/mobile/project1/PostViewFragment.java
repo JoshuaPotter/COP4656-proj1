@@ -70,13 +70,13 @@ public class PostViewFragment extends Fragment implements OnMapReadyCallback {
         LatLng postLatLng = new LatLng(item.getLatitude(), item.getLongitude());
 
         //Add marker at post location, set text to post title
-        map.addMarker(new MarkerOptions().position(postLatLng).title(item.getTitle()));
+        //map.addMarker(new MarkerOptions().position(postLatLng).title(item.getTitle()));
         //Draw circle around marker w/ radius of 100 ft
         map.addCircle(new CircleOptions()
                 .center(postLatLng)
                 .radius(30.48)
                 .strokeColor(Color.BLUE)
                 .fillColor(0x220000FF));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(postLatLng, 16.0f));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(postLatLng, 17.0f));
     }
 }
