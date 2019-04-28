@@ -93,12 +93,14 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
             }
         });
 
-        //OnClickListener for starring a post
+        // OnClickListener for starring a post
         viewHolder.favorite_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int x = Integer.parseInt(item.getUpvotes()) + 1;
+                String y = Integer.toString(x);
+                viewHolder.upvotes.setText(y);
                 upvotePost(position);
-                viewHolder.upvotes.setText(item.getUpvotes());
             }
         });
 
