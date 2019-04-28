@@ -304,7 +304,7 @@ public class FirestoreHelper {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w("Firestore error: ", "Error deleting document", e);
+                        Log.w("Firestore error: ", "Error updating document", e);
                     }
                 });
     }
