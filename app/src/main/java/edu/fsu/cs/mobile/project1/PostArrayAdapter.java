@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import java.util.Collections;
 public class PostArrayAdapter extends ArrayAdapter<Post> {
     private Context mContext;
     private ArrayList<Post> postList;
+    private Singleton var = Singleton.getInstance();
     private FirebaseFirestore db;
 
     public PostArrayAdapter(@NonNull Context context, int resource) {
@@ -97,10 +99,23 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         viewHolder.favorite_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int x = Integer.parseInt(item.getUpvotes()) + 1;
-                String y = Integer.toString(x);
-                viewHolder.upvotes.setText(y);
-                upvotePost(position);
+                if(!var.favoritedPostList.contains(item.getPostid())) {
+                    //int x = Integer.parseInt(item.getUpvotes()) + 1;
+                    //String y = Integer.toString(x);
+                    //viewHolder.upvotes.setText(y);
+                    upvotePost(position);
+
+                    viewHolder.upvotes.setText(item.getUpvotes());
+                    var.favoritedPostList.add(item.getPostid());
+                }
+                else {
+                    var.favoritedPostList.remove(item.getPostid());
+                    //int x = Integer.parseInt(item.getUpvotes()) - 1;
+                    //String y = Integer.toString(x);
+                    //viewHolder.upvotes.setText(y);
+                    downvotePost(position);
+                    viewHolder.upvotes.setText(item.getUpvotes());
+                }
             }
         });
 
@@ -173,6 +188,15 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         db = FirebaseFirestore.getInstance();
         final Post item = getItem(position);
         int upvoteCountPlusOne = Integer.parseInt(item.getUpvotes()) + 1;
+        String new_upvote = Integer.toString(upvoteCountPlusOne);
+        FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
+    }
+
+    public void downvotePost(int position) {
+        // Downvotes a post at a specific index
+        db = FirebaseFirestore.getInstance();
+        final Post item = getItem(position);
+        int upvoteCountPlusOne = Integer.parseInt(item.getUpvotes()) - 1;
         String new_upvote = Integer.toString(upvoteCountPlusOne);
         FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
     }

@@ -294,7 +294,7 @@ public class FirestoreHelper {
     public static void updateUpvoteDB(final FirebaseFirestore db, final String id, final String upvotes) {
         db.collection(FirestoreHelper.POSTS_COLLECTION)
                 .document(id)
-                .update(UPVOTES, upvotes) //here
+                .update(UPVOTES, upvotes)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
