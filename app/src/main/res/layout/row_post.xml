@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/row_textView_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="Title"
@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/row_textView_message"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:text="Message"
@@ -26,11 +26,33 @@
 
     <TextView
         android:id="@+id/row_textView_timestamp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Timestamp"
         android:textColor="#aaaaaa"
         android:textSize="10sp"
         tools:text="Timestamp" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="3dp">
+
+        <ImageButton
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00ffffff"
+            android:src="@drawable/star" />
+
+        <TextView
+            android:id="@+id/row_textView_upvotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Number of upvotes" />
+    </LinearLayout>
 
 </LinearLayout>

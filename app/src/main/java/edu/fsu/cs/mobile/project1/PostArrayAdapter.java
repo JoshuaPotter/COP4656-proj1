@@ -12,10 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +26,8 @@ import java.util.Collections;
 public class PostArrayAdapter extends ArrayAdapter<Post> {
     private Context mContext;
     private ArrayList<Post> postList;
+    private Singleton var = Singleton.getInstance();
+    private FirebaseFirestore db;
 
     public PostArrayAdapter(@NonNull Context context, int resource) {
         super(context, resource);
@@ -35,15 +40,17 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         TextView title;
         TextView message;
         TextView timestamp;
+        TextView upvotes;
+        ImageButton favorite_btn;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final Post item = getItem(position); // Post at this position
 
         // Populate ListView with each post entry
-        PostHolder viewHolder;
+        final PostHolder viewHolder;
         if(convertView == null) {
             // Inflate layout
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -53,9 +60,16 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
             viewHolder.title = convertView.findViewById(R.id.row_textView_title);
             viewHolder.message = convertView.findViewById(R.id.row_textView_message);
             viewHolder.timestamp = convertView.findViewById(R.id.row_textView_timestamp);
+            viewHolder.upvotes = convertView.findViewById(R.id.row_textView_upvotes);
+            viewHolder.favorite_btn = convertView.findViewById(R.id.favorite);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (PostHolder) convertView.getTag();
+        }
+
+        // Setting Favorite button image
+        if(var.favoritedPostList.contains(item.getPostid())) {
+            viewHolder.favorite_btn.setImageResource(R.drawable.rate_star_small_on_holo_dark);
         }
 
         // Remove newlines and only show first 140 characters
@@ -65,6 +79,7 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         viewHolder.title.setText(item.getTitle());
         viewHolder.message.setText(sanitizedMessage); // get first 144 characters
         viewHolder.timestamp.setText(item.getFormattedTimestamp());
+        viewHolder.upvotes.setText(item.getUpvotes());
 
         // OnClickListener for each post in adapter
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +109,25 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
                 return false;
             }
         });
+
+        // OnClickListener for starring a post
+        viewHolder.favorite_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!var.favoritedPostList.contains(item.getPostid())) {
+                    // if post has not been upvoted by you, upvote it
+                    var.favoritedPostList.add(item.getPostid());
+                    upvotePost(position);
+                    viewHolder.upvotes.setText(item.getUpvotes());
+                    viewHolder.favorite_btn.setImageResource(R.drawable.rate_star_small_on_holo_dark);
+                }
+                else {
+                    // if post has already been upvoted by you, take away your upvote
+                    var.favoritedPostList.remove(item.getPostid());
+                    downvotePost(position);
+                    viewHolder.upvotes.setText(item.getUpvotes());
+                    viewHolder.favorite_btn.setImageResource(R.drawable.rate_star_small_off_holo_dark);
+                }
 
         return convertView;
     }
@@ -159,4 +193,27 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         // Sorts using Comparable in Posts class by timestamp date
         Collections.sort(postList, Collections.reverseOrder());
     }
+
+    public void upvotePost(int position){
+        // Upvotes a post at specific index
+        db = FirebaseFirestore.getInstance();
+        final Post item = getItem(position);
+        int upvoteCountPlusOne = Integer.parseInt(item.getUpvotes()) + 1;
+        String new_upvote = Integer.toString(upvoteCountPlusOne);
+        FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
+        item.setUpvotes(new_upvote);
+        postList.set(position, item);
+    }
+
+    public void downvotePost(int position) {
+        // Downvotes a post at a specific index
+        db = FirebaseFirestore.getInstance();
+        final Post item = getItem(position);
+        int upvoteCountMinusOne = Integer.parseInt(item.getUpvotes()) - 1;
+        String new_upvote = Integer.toString(upvoteCountMinusOne);
+        FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
+        item.setUpvotes(new_upvote);
+        postList.set(position, item);
+    }
+
 }
