@@ -114,20 +114,21 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         viewHolder.favorite_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!var.favoritedPostList.contains(item.getPostid())) {
+                if (!var.favoritedPostList.contains(item.getPostid())) {
                     // if post has not been upvoted by you, upvote it
                     var.favoritedPostList.add(item.getPostid());
                     upvotePost(position);
                     viewHolder.upvotes.setText(item.getUpvotes());
                     viewHolder.favorite_btn.setImageResource(R.drawable.rate_star_small_on_holo_dark);
-                }
-                else {
+                } else {
                     // if post has already been upvoted by you, take away your upvote
                     var.favoritedPostList.remove(item.getPostid());
                     downvotePost(position);
                     viewHolder.upvotes.setText(item.getUpvotes());
                     viewHolder.favorite_btn.setImageResource(R.drawable.rate_star_small_off_holo_dark);
                 }
+            }
+        });
 
         return convertView;
     }
