@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,19 +99,12 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
             @Override
             public void onClick(View v) {
                 if(!var.favoritedPostList.contains(item.getPostid())) {
-                    //int x = Integer.parseInt(item.getUpvotes()) + 1;
-                    //String y = Integer.toString(x);
-                    //viewHolder.upvotes.setText(y);
-                    upvotePost(position);
-
-                    viewHolder.upvotes.setText(item.getUpvotes());
                     var.favoritedPostList.add(item.getPostid());
+                    upvotePost(position);
+                    viewHolder.upvotes.setText(item.getUpvotes());
                 }
                 else {
                     var.favoritedPostList.remove(item.getPostid());
-                    //int x = Integer.parseInt(item.getUpvotes()) - 1;
-                    //String y = Integer.toString(x);
-                    //viewHolder.upvotes.setText(y);
                     downvotePost(position);
                     viewHolder.upvotes.setText(item.getUpvotes());
                 }
@@ -190,15 +182,19 @@ public class PostArrayAdapter extends ArrayAdapter<Post> {
         int upvoteCountPlusOne = Integer.parseInt(item.getUpvotes()) + 1;
         String new_upvote = Integer.toString(upvoteCountPlusOne);
         FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
+        item.setUpvotes(new_upvote);
+        postList.set(position, item);
     }
 
     public void downvotePost(int position) {
         // Downvotes a post at a specific index
         db = FirebaseFirestore.getInstance();
         final Post item = getItem(position);
-        int upvoteCountPlusOne = Integer.parseInt(item.getUpvotes()) - 1;
-        String new_upvote = Integer.toString(upvoteCountPlusOne);
+        int upvoteCountMinusOne = Integer.parseInt(item.getUpvotes()) - 1;
+        String new_upvote = Integer.toString(upvoteCountMinusOne);
         FirestoreHelper.updateUpvoteDB(db, item.getPostid(), new_upvote);
+        item.setUpvotes(new_upvote);
+        postList.set(position, item);
     }
 
 }
