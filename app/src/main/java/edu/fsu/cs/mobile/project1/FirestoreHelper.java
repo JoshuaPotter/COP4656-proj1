@@ -298,7 +298,7 @@ public class FirestoreHelper {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d("success", "updated upvotes");
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
